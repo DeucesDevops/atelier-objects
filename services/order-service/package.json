@@ -1,0 +1,12 @@
+{
+  "name": "@commerce/order-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "build": "tsc -p tsconfig.json", "start:dev": "tsx watch src/main.ts", "test": "jest" },
+  "dependencies": {
+    "@commerce/events": "1.0.0", "@nestjs/axios": "^4.0.0", "@nestjs/common": "^11.0.0", "@nestjs/core": "^11.0.0", "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0", "@nestjs/typeorm": "^11.0.0", "axios": "^1.8.0",
+    "class-transformer": "^0.5.1", "class-validator": "^0.14.1", "pg": "^8.13.3", "reflect-metadata": "^0.2.2", "rxjs": "^7.8.1", "typeorm": "^0.3.21"
+  },
+  "devDependencies": { "@types/jest": "^29.5.14", "jest": "^29.7.0", "ts-jest": "^29.2.5", "tsx": "^4.19.2", "typescript": "^5.7.3" }
+}

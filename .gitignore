@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.idea/
+.vscode/
+*.iml
+target/
+__pycache__/
+.pytest_cache/
+.venv/
+*.py[cod]
+.DS_Store
+work/
