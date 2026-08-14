@@ -25,10 +25,19 @@ class GatewayController {
   health() { return { status: 'ok', service: 'api-gateway' }; }
 
   @Get('openapi.json')
-  openapi() { return { openapi: '3.1.0', info: { title: 'Commerce API Gateway', version: '1.0.0' }, paths: { '/health': { get: operation('Gateway liveness check') }, '/api/{service}/{path}': { get: { ...operation('Proxy a request to a commerce service'), parameters: [{ name: 'service', in: 'path', required: true, schema: { type: 'string' } }, { name: 'path', in: 'path', required: true, schema: { type: 'string' } }] } } } }; }
+  openapi() { return { openapi: '3.1.0', info: { title: 'Commerce API Gateway', version: '1.0.0' }, paths: { '/health': { get: operation('Gateway liveness check') }, '/api/{service}': { get: { ...operation('Proxy a collection request to a commerce service'), parameters: [{ name: 'service', in: 'path', required: true, schema: { type: 'string' } }] } }, '/api/{service}/{path}': { get: { ...operation('Proxy a nested request to a commerce service'), parameters: [{ name: 'service', in: 'path', required: true, schema: { type: 'string' } }, { name: 'path', in: 'path', required: true, schema: { type: 'string' } }] } } } }; }
+
+  @All('api/:service')
+  async proxyCollection(@Req() req: Request, @Res() res: Response): Promise<void> {
+    await this.forward(req, res);
+  }
 
   @All('api/:service/*path')
-  async proxy(@Req() req: Request, @Res() res: Response): Promise<void> {
+  async proxyNested(@Req() req: Request, @Res() res: Response): Promise<void> {
+    await this.forward(req, res);
+  }
+
+  private async forward(req: Request, res: Response): Promise<void> {
     const service = Array.isArray(req.params.service) ? req.params.service[0] : req.params.service;
     const baseUrl = routes[service];
     if (!baseUrl) { res.status(404).json({ message: `Unknown service: ${service}` }); return; }
