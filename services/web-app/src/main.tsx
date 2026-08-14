@@ -104,6 +104,7 @@ function App() {
     const stored = localStorage.getItem('atelier-wishlist');
     return stored ? JSON.parse(stored) as string[] : [];
   });
+  const [productQuantity, setProductQuantity] = useState(1);
   const [checkoutComplete, setCheckoutComplete] = useState<Order | null>(null);
 
   const total = useMemo(() => cartTotal(cart), [cart]);
@@ -123,6 +124,7 @@ function App() {
 
   useEffect(() => { localStorage.setItem('atelier-cart', JSON.stringify(cart)); }, [cart]);
   useEffect(() => { localStorage.setItem('atelier-wishlist', JSON.stringify(wishlist)); }, [wishlist]);
+  useEffect(() => { if (route.startsWith('/product/')) setProductQuantity(1); }, [route]);
 
   async function refresh() {
     const [nextProducts, nextInventory, nextDeliveries, nextAnalytics] = await Promise.all([
@@ -307,7 +309,6 @@ function App() {
   }
 
   function ProductPage({ product }: { product: Product }) {
-    const [quantity, setQuantity] = useState(1);
     const stock = inventoryFor(product.sku)?.available ?? 0;
     const detail = productDetails[product.sku] ?? { category: 'Essentials', rating: '4.8', features: [] };
     return <section className="section page-section product-page">
@@ -325,8 +326,8 @@ function App() {
           <p className="detail-description">{product.description}. Designed to feel intuitive from the first use and considered enough to keep for years.</p>
           <div className="finish-picker"><span>Finish</span><strong>Charcoal / Walnut</strong><div><button className="finish dark selected" aria-label="Charcoal and walnut finish" /><button className="finish light" aria-label="Sand and silver finish" /></div></div>
           <div className="purchase-row">
-            <div className="quantity-control"><button onClick={() => setQuantity(value => Math.max(1, value - 1))} aria-label="Decrease quantity"><Minus size={15} /></button><span>{quantity}</span><button onClick={() => setQuantity(value => Math.min(stock || 1, value + 1))} aria-label="Increase quantity"><Plus size={15} /></button></div>
-            <button className="button add-bag" onClick={() => addProduct(product, quantity)} disabled={stock < 1}>Add to bag · {formatCurrency(product.price * quantity)}</button>
+            <div className="quantity-control"><button onClick={() => setProductQuantity(value => Math.max(1, value - 1))} aria-label="Decrease quantity"><Minus size={15} /></button><span>{productQuantity}</span><button onClick={() => setProductQuantity(value => Math.min(stock || 1, value + 1))} aria-label="Increase quantity"><Plus size={15} /></button></div>
+            <button className="button add-bag" onClick={() => addProduct(product, productQuantity)} disabled={stock < 1}>Add to bag · {formatCurrency(product.price * productQuantity)}</button>
           </div>
           <p className="stock-message"><span className={stock > 0 ? 'stock-dot' : 'stock-dot unavailable'} /> {stock > 0 ? `In stock · ${stock} available` : 'Temporarily unavailable'}</p>
           <div className="product-promises">
@@ -403,7 +404,7 @@ function App() {
 
   const productId = route.startsWith('/product/') ? route.split('/')[2] : null;
   const selectedProduct = products.find(product => product.id === productId);
-  const content = route === '/' ? <HomePage /> : route === '/shop' ? <ShopPage /> : route === '/cart' ? <CartPage /> : route === '/checkout' ? <CheckoutPage /> : route === '/account' ? <AccountPage /> : route === '/orders' ? <OrdersPage /> : route === '/wishlist' ? <WishlistPage /> : route === '/system' ? <SystemPage /> : selectedProduct ? <ProductPage product={selectedProduct} /> : <ShopPage />;
+  const content = route === '/' ? HomePage() : route === '/shop' ? ShopPage() : route === '/cart' ? CartPage() : route === '/checkout' ? CheckoutPage() : route === '/account' ? AccountPage() : route === '/orders' ? OrdersPage() : route === '/wishlist' ? WishlistPage() : route === '/system' ? SystemPage() : selectedProduct ? ProductPage({ product: selectedProduct }) : ShopPage();
 
   return <div className="app-shell">
     <div className="announcement">Complimentary delivery on orders over £75 <button onClick={() => navigate('/shop')}>Shop now</button></div>
