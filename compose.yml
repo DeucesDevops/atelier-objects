@@ -117,6 +117,7 @@ services:
       PORT: 3004
       DATABASE_URL: postgres://commerce:commerce@inventory-db:5432/inventory
       KAFKA_BROKERS: redpanda:9092
+      SEED_DEMO: "true"
     depends_on:
       inventory-db: { condition: service_healthy }
       redpanda: { condition: service_healthy }

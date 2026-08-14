@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createEvent, KafkaEventPublisher } from '@commerce/events';
 import { DataSource, Repository } from 'typeorm';
@@ -7,9 +7,16 @@ import { InventoryItem, Reservation } from './inventory.entities';
 type ReservationRequest = { orderId: string; items: Array<{ sku: string; quantity: number }> };
 
 @Injectable()
-export class InventoryService {
+export class InventoryService implements OnModuleInit {
   private readonly events = new KafkaEventPublisher('inventory-service');
   constructor(@InjectRepository(InventoryItem) private readonly stock: Repository<InventoryItem>, private readonly dataSource: DataSource) {}
+
+  async onModuleInit() {
+    if (process.env.SEED_DEMO !== 'true') return;
+    for (const sku of ['KEYBOARD-001', 'HEADPHONES-001', 'SPEAKER-001', 'MOUSE-001', 'LAMP-001', 'DESKMAT-001']) {
+      if (!await this.stock.existsBy({ sku })) await this.setStock(sku, 24);
+    }
+  }
 
   list() { return this.stock.find({ order: { sku: 'ASC' } }); }
 

@@ -1,6 +1,6 @@
 # Web App
 
-React frontend for the commerce platform demo. It uses the API Gateway by default at `http://localhost:8080` and gives a shopper-facing way to register, browse products, manage a cart, place orders, inspect notifications, and see analytics events.
+React storefront for the commerce platform demo. It uses the API Gateway by default at `http://localhost:8080` and presents the shared microservices workload as a polished, realistic retail experience.
 
 ## Run locally
 
@@ -15,8 +15,10 @@ Set `VITE_API_URL` if the gateway is running somewhere other than `http://localh
 
 ## Main flows
 
-- Register or sign in.
-- Add catalog products to the cart.
-- Place a demo order with `demo-card`.
-- Use `decline` to simulate a failed payment and inventory release.
-- Review order status, inventory, notifications, and analytics.
+- Browse and filter the collection, open product detail pages, and save favourites.
+- Register or sign in through a dedicated account experience.
+- Manage a persistent shopping bag and complete delivery and payment forms.
+- Place a demo order with `demo-card`, then track, cancel, and refund it.
+- Use `decline` to demonstrate payment failure and inventory release.
+- Open **Live system** to inspect inventory, notifications, and analytics without exposing operational data in the customer journey.
+- Save products to a persistent favourites page and keep cart contents across reloads.

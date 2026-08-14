@@ -14,9 +14,19 @@ export class CatalogService implements OnModuleInit {
   constructor(@InjectRepository(Product) private readonly products: Repository<Product>) {}
 
   async onModuleInit() {
-    if (process.env.SEED_DEMO === 'true' && await this.products.count() === 0) {
-      await this.create({ sku: 'KEYBOARD-001', name: 'Mechanical Keyboard', description: 'Hot-swappable 75% keyboard', price: 129.99, active: true });
-      await this.create({ sku: 'HEADPHONES-001', name: 'Studio Headphones', description: 'Closed-back monitoring headphones', price: 89.50, active: true });
+    if (process.env.SEED_DEMO !== 'true') return;
+    const demoProducts: ProductInput[] = [
+      { sku: 'KEYBOARD-001', name: 'Form 75 Keyboard', description: 'A hot-swappable mechanical keyboard with a solid aluminium frame', price: 129.99, active: true },
+      { sku: 'HEADPHONES-001', name: 'Studio Headphones', description: 'Closed-back wireless headphones tuned for detail and long listening', price: 189.00, active: true },
+      { sku: 'SPEAKER-001', name: 'Arc Wireless Speaker', description: 'Room-filling wireless sound in a sculptural, compact form', price: 219.00, active: true },
+      { sku: 'MOUSE-001', name: 'Contour Precision Mouse', description: 'A quiet ergonomic mouse with glass-ready tracking', price: 79.00, active: true },
+      { sku: 'LAMP-001', name: 'Halo Task Light', description: 'Low-glare desk lighting with warm-to-cool touch dimming', price: 149.00, active: true },
+      { sku: 'DESKMAT-001', name: 'Wool Desk Mat', description: 'Recycled wool felt with a naturally grippy cork backing', price: 49.00, active: true }
+    ];
+    for (const demoProduct of demoProducts) {
+      const existing = await this.products.findOneBy({ sku: demoProduct.sku });
+      if (!existing) await this.create(demoProduct);
+      else await this.products.save(Object.assign(existing, demoProduct));
     }
   }
 

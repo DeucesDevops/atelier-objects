@@ -54,9 +54,12 @@ cp .env.example .env
 docker compose up --build -d
 ./commerce-demo/seed.sh
 ./commerce-demo/demo-flow.sh
+./commerce-demo/e2e-commerce-flow.sh
 ```
 
 Open the frontend at `http://localhost:5173`. The API Gateway remains available at `http://localhost:8080`.
+
+`e2e-commerce-flow.sh` is the repeatable full-workflow check. It verifies service health, catalog data, registration, login, profile access, successful checkout, payment capture, order tracking, notifications, cancellation/refund, declined-payment recovery, inventory release, and analytics consumption.
 
 Initial image builds can take several minutes because they compile Node, Java, and Python services. View the resulting data:
 
