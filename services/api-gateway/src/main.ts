@@ -4,18 +4,11 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { NestFactory } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { gatewayRoutePatterns, serviceRoutes } from './routes';
 
 const operation = (summary: string) => ({ summary, responses: { '200': { description: 'Successful response' } } });
 
-const routes: Record<string, string> = {
-  auth: process.env.AUTH_SERVICE_URL ?? 'http://localhost:3001',
-  catalog: process.env.CATALOG_SERVICE_URL ?? 'http://localhost:3002',
-  orders: process.env.ORDER_SERVICE_URL ?? 'http://localhost:3003',
-  inventory: process.env.INVENTORY_SERVICE_URL ?? 'http://localhost:3004',
-  payments: process.env.PAYMENT_SERVICE_URL ?? 'http://localhost:8085',
-  notifications: process.env.NOTIFICATION_SERVICE_URL ?? 'http://localhost:8001',
-  analytics: process.env.ANALYTICS_SERVICE_URL ?? 'http://localhost:8002'
-};
+const routes = serviceRoutes();
 
 @Controller()
 class GatewayController {
@@ -27,12 +20,12 @@ class GatewayController {
   @Get('openapi.json')
   openapi() { return { openapi: '3.1.0', info: { title: 'Commerce API Gateway', version: '1.0.0' }, paths: { '/health': { get: operation('Gateway liveness check') }, '/api/{service}': { get: { ...operation('Proxy a collection request to a commerce service'), parameters: [{ name: 'service', in: 'path', required: true, schema: { type: 'string' } }] } }, '/api/{service}/{path}': { get: { ...operation('Proxy a nested request to a commerce service'), parameters: [{ name: 'service', in: 'path', required: true, schema: { type: 'string' } }, { name: 'path', in: 'path', required: true, schema: { type: 'string' } }] } } } }; }
 
-  @All('api/:service')
+  @All(gatewayRoutePatterns.collection)
   async proxyCollection(@Req() req: Request, @Res() res: Response): Promise<void> {
     await this.forward(req, res);
   }
 
-  @All('api/:service/*path')
+  @All(gatewayRoutePatterns.nested)
   async proxyNested(@Req() req: Request, @Res() res: Response): Promise<void> {
     await this.forward(req, res);
   }

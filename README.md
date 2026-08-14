@@ -41,6 +41,7 @@ flowchart LR
 | Payment | Java 21, Spring Boot | 8085 | Simulated authorize, capture, and refund lifecycle |
 | Notification | Python, FastAPI | 8001 | Event-driven simulated customer messages |
 | Analytics | Python, FastAPI | 8002 | Event-consumed reporting read model |
+| Web App | React, Vite | 5173 | Shopper UI for catalog, cart, checkout, notifications, and analytics |
 
 Each data-owning service has its own PostgreSQL database. Services exchange the shared event envelope described in [docs/events.md](docs/events.md); Redpanda supplies a Kafka-compatible local broker.
 
@@ -54,6 +55,8 @@ docker compose up --build -d
 ./commerce-demo/seed.sh
 ./commerce-demo/demo-flow.sh
 ```
+
+Open the frontend at `http://localhost:5173`. The API Gateway remains available at `http://localhost:8080`.
 
 Initial image builds can take several minutes because they compile Node, Java, and Python services. View the resulting data:
 
@@ -77,6 +80,8 @@ The gateway maps `/api/{service}` to the owning service:
 - `/api/notifications/deliveries`
 - `/api/analytics/summary`, `/api/analytics/events`
 
+The browser frontend runs separately at `/` on port `5173`.
+
 Every service exposes `GET /health`. NestJS services expose OpenAPI JSON at `/openapi.json`; FastAPI and Spring Boot expose interactive Swagger UI at `/docs`. Spring Boot also reports health at `/actuator/health`.
 
 ## Demo behavior
@@ -91,6 +96,7 @@ Use `"paymentMethod": "decline"` when creating an order to trigger a simulated p
 npm install
 npm test
 npm run build
+npm --workspace @commerce/web-app run dev
 
 mvn -f services/payment-service/pom.xml test
 

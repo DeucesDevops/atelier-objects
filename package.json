@@ -2,12 +2,13 @@
   "name": "commerce-platform-app",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["services/api-gateway", "services/auth-service", "services/catalog-service", "services/order-service", "services/inventory-service", "shared/typescript"],
+  "workspaces": ["services/api-gateway", "services/auth-service", "services/catalog-service", "services/order-service", "services/inventory-service", "services/web-app", "shared/typescript"],
   "scripts": {
     "prebuild": "npm run build --workspace @commerce/events",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "start:gateway": "npm --workspace @commerce/api-gateway run start:dev"
+    "start:gateway": "npm --workspace @commerce/api-gateway run start:dev",
+    "start:web": "npm --workspace @commerce/web-app run dev"
   },
   "engines": { "node": ">=20" }
 }

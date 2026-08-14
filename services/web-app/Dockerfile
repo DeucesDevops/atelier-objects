@@ -9,17 +9,13 @@ COPY services/order-service/package.json services/order-service/package.json
 COPY services/inventory-service/package.json services/inventory-service/package.json
 COPY services/web-app/package.json services/web-app/package.json
 RUN npm ci
-COPY shared/typescript shared/typescript
-COPY services services
-RUN npm run build
+COPY services/web-app services/web-app
+RUN npm --workspace @commerce/web-app run build
 
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/node_modules node_modules
-COPY --from=build /app/shared/typescript/dist shared/typescript/dist
-COPY --from=build /app/shared/typescript/package.json shared/typescript/package.json
-COPY --from=build /app/services services
-ARG SERVICE
-ENV SERVICE_NAME=$SERVICE
-CMD ["sh", "-c", "node services/${SERVICE_NAME}/dist/main.js"]
+COPY --from=build /app/services/web-app services/web-app
+WORKDIR /app/services/web-app
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
