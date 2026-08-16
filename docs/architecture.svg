@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Commerce Platform application architecture</title>
+  <desc id="desc">A React frontend connects through a NestJS API gateway to seven domain services. Orders synchronously orchestrate inventory and payment. Services publish domain events through Redpanda to notification and analytics consumers. Data-owning services use separate PostgreSQL databases, while auth and catalog use Redis.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08111f"/><stop offset="1" stop-color="#111b31"/>
+    </linearGradient>
+    <linearGradient id="gateway" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#020617" flood-opacity=".42"/>
+    </filter>
+    <marker id="arrowSync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#71d6ff"/></marker>
+    <marker id="arrowEvent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#fbbf24"/></marker>
+    <style>
+      .title{font:700 34px Inter,ui-sans-serif,system-ui,sans-serif;fill:#f8fafc}.subtitle{font:400 15px Inter,ui-sans-serif,system-ui,sans-serif;fill:#94a3b8;letter-spacing:.2px}.section{font:700 13px Inter,ui-sans-serif,system-ui,sans-serif;fill:#64748b;letter-spacing:2px}.name{font:700 17px Inter,ui-sans-serif,system-ui,sans-serif;fill:#f8fafc}.tech{font:500 12px Inter,ui-sans-serif,system-ui,sans-serif;fill:#94a3b8}.port{font:600 11px Inter,ui-sans-serif,system-ui,sans-serif;fill:#cbd5e1}.db{font:600 12px Inter,ui-sans-serif,system-ui,sans-serif;fill:#cbd5e1}.small{font:500 11px Inter,ui-sans-serif,system-ui,sans-serif;fill:#94a3b8}.sync{fill:none;stroke:#71d6ff;stroke-width:2.2;marker-end:url(#arrowSync)}.event{fill:none;stroke:#fbbf24;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrowEvent)}.storage{fill:none;stroke:#64748b;stroke-width:1.7}.card{fill:#17243a;stroke:#334155;stroke-width:1.2}.consumer{fill:#21243c;stroke:#a78bfa;stroke-width:1.2}.dbbox{fill:#101a2d;stroke:#334155;stroke-width:1.2}
+    </style>
+  </defs>
+  <rect width="1600" height="1080" fill="url(#bg)"/>
+  <circle cx="1410" cy="40" r="280" fill="#4f46e5" opacity=".055"/><circle cx="80" cy="990" r="260" fill="#06b6d4" opacity=".045"/>
+
+  <text class="title" x="70" y="60">Commerce Platform — Application Architecture</text>
+  <text class="subtitle" x="70" y="88">Polyglot microservices • synchronous checkout orchestration • asynchronous domain events</text>
+
+  <text class="section" x="70" y="137">EXPERIENCE &amp; EDGE</text>
+  <g filter="url(#shadow)">
+    <rect class="card" x="70" y="157" rx="14" width="250" height="88"/>
+    <circle cx="103" cy="191" r="17" fill="#06b6d4" opacity=".2"/><text x="96" y="197" font-size="19" fill="#67e8f9">◈</text>
+    <text class="name" x="132" y="190">Shopper Web App</text><text class="tech" x="132" y="212">React + Vite</text><text class="port" x="260" y="230">:5173</text>
+    <rect x="398" y="157" rx="14" width="300" height="88" fill="url(#gateway)"/>
+    <circle cx="434" cy="191" r="18" fill="#fff" opacity=".14"/><text x="426" y="197" font-size="18" fill="#fff">↔</text>
+    <text class="name" x="465" y="190">API Gateway</text><text x="465" y="212" font-family="Inter,system-ui" font-size="12" fill="#ddd6fe">NestJS • public routing</text><text x="645" y="230" font-family="Inter,system-ui" font-weight="600" font-size="11" fill="#ede9fe">:8080</text>
+  </g>
+  <path class="sync" d="M320 201 H390"/><text class="small" x="337" y="188">HTTP</text>
+
+  <text class="section" x="70" y="305">DOMAIN SERVICES</text>
+  <!-- Gateway routing bus -->
+  <path class="sync" d="M548 245 V279 H1437 V334"/>
+  <path class="sync" d="M548 279 H180 V334"/><path class="sync" d="M385 279 V334"/><path class="sync" d="M595 279 V334"/><path class="sync" d="M805 279 V334"/><path class="sync" d="M1015 279 V334"/><path class="sync" d="M1225 279 V334"/>
+
+  <!-- Service cards -->
+  <g filter="url(#shadow)">
+    <g><rect class="card" x="90" y="335" rx="12" width="180" height="92"/><rect x="90" y="335" width="5" height="92" rx="2" fill="#22d3ee"/><text class="name" x="108" y="366">Auth</text><text class="tech" x="108" y="388">NestJS / TypeScript</text><text class="port" x="108" y="410">JWT identities • :3001</text></g>
+    <g><rect class="card" x="295" y="335" rx="12" width="180" height="92"/><rect x="295" y="335" width="5" height="92" rx="2" fill="#22d3ee"/><text class="name" x="313" y="366">Catalog</text><text class="tech" x="313" y="388">NestJS / TypeScript</text><text class="port" x="313" y="410">Products • :3002</text></g>
+    <g><rect class="card" x="505" y="335" rx="12" width="180" height="92"/><rect x="505" y="335" width="5" height="92" rx="2" fill="#34d399"/><text class="name" x="523" y="366">Orders</text><text class="tech" x="523" y="388">NestJS / TypeScript</text><text class="port" x="523" y="410">Checkout • :3003</text></g>
+    <g><rect class="card" x="715" y="335" rx="12" width="180" height="92"/><rect x="715" y="335" width="5" height="92" rx="2" fill="#22d3ee"/><text class="name" x="733" y="366">Inventory</text><text class="tech" x="733" y="388">NestJS / TypeScript</text><text class="port" x="733" y="410">Reservations • :3004</text></g>
+    <g><rect class="card" x="925" y="335" rx="12" width="180" height="92"/><rect x="925" y="335" width="5" height="92" rx="2" fill="#f97316"/><text class="name" x="943" y="366">Payments</text><text class="tech" x="943" y="388">Java 21 / Spring Boot</text><text class="port" x="943" y="410">Lifecycle • :8085</text></g>
+    <g><rect class="consumer" x="1135" y="335" rx="12" width="180" height="92"/><rect x="1135" y="335" width="5" height="92" rx="2" fill="#a78bfa"/><text class="name" x="1153" y="366">Notifications</text><text class="tech" x="1153" y="388">Python / FastAPI</text><text class="port" x="1153" y="410">Deliveries • :8001</text></g>
+    <g><rect class="consumer" x="1345" y="335" rx="12" width="180" height="92"/><rect x="1345" y="335" width="5" height="92" rx="2" fill="#a78bfa"/><text class="name" x="1363" y="366">Analytics</text><text class="tech" x="1363" y="388">Python / FastAPI</text><text class="port" x="1363" y="410">Read model • :8002</text></g>
+  </g>
+
+  <!-- Checkout orchestration -->
+  <path class="sync" d="M685 367 C702 348 700 348 715 367"/><path class="sync" d="M685 397 C790 455 850 455 925 397"/>
+  <text class="small" x="691" y="343">reserve / release</text><text class="small" x="766" y="452">authorize • capture • refund</text>
+
+  <text class="section" x="70" y="505">DATA OWNERSHIP</text>
+  <g>
+    <path class="storage" d="M180 427 V535"/><path class="storage" d="M385 427 V535"/><path class="storage" d="M595 427 V535"/><path class="storage" d="M805 427 V535"/><path class="storage" d="M1015 427 V535"/><path class="storage" d="M1435 427 V535"/>
+    <g class="dbbox"><ellipse cx="180" cy="542" rx="70" ry="14"/><path d="M110 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="180" cy="590" rx="70" ry="14"/></g><text class="db" x="146" y="572">Auth DB</text>
+    <g class="dbbox"><ellipse cx="385" cy="542" rx="70" ry="14"/><path d="M315 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="385" cy="590" rx="70" ry="14"/></g><text class="db" x="341" y="572">Catalog DB</text>
+    <g class="dbbox"><ellipse cx="595" cy="542" rx="70" ry="14"/><path d="M525 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="595" cy="590" rx="70" ry="14"/></g><text class="db" x="556" y="572">Order DB</text>
+    <g class="dbbox"><ellipse cx="805" cy="542" rx="70" ry="14"/><path d="M735 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="805" cy="590" rx="70" ry="14"/></g><text class="db" x="756" y="572">Inventory DB</text>
+    <g class="dbbox"><ellipse cx="1015" cy="542" rx="70" ry="14"/><path d="M945 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="1015" cy="590" rx="70" ry="14"/></g><text class="db" x="968" y="572">Payment DB</text>
+    <g class="dbbox"><ellipse cx="1435" cy="542" rx="70" ry="14"/><path d="M1365 542v48c0 8 31 14 70 14s70-6 70-14v-48"/><ellipse cx="1435" cy="590" rx="70" ry="14"/></g><text class="db" x="1386" y="572">Analytics DB</text>
+  </g>
+  <!-- Redis -->
+  <g filter="url(#shadow)"><rect x="250" y="656" width="140" height="62" rx="13" fill="#241b2f" stroke="#fb7185"/><text class="name" x="295" y="683">Redis</text><text class="small" x="269" y="703">sessions + cache</text></g>
+  <path class="storage" d="M180 604 V687 H250"/><path class="storage" d="M385 604 V633 H320 V656"/>
+
+  <text class="section" x="70" y="782">ASYNCHRONOUS EVENT PLANE</text>
+  <g filter="url(#shadow)"><rect x="520" y="815" width="560" height="94" rx="18" fill="#2b2111" stroke="#f59e0b" stroke-width="1.5"/><circle cx="574" cy="862" r="23" fill="#f59e0b" opacity=".2"/><path d="M563 862h22M574 851v22" stroke="#fbbf24" stroke-width="3"/><text class="name" x="615" y="852">Redpanda</text><text class="tech" x="615" y="875">Kafka-compatible broker • topic: commerce.domain-events</text></g>
+  <!-- publishers -->
+  <path class="event" d="M385 427 V755 H600 V815"/><path class="event" d="M595 427 V735 H690 V815"/><path class="event" d="M805 427 V715 H780 V815"/><path class="event" d="M1015 427 V755 H870 V815"/>
+  <!-- notification consumes and republishes; analytics consumes -->
+  <path class="event" d="M1080 846 H1225 V427"/><path class="event" d="M1225 427 V787 H1000 V815"/><path class="event" d="M1080 878 H1435 V427"/>
+  <text class="small" x="283" y="748" fill="#fbbf24">publish domain events</text><text class="small" x="1121" y="835">consume</text><text class="small" x="1284" y="866">consume</text>
+
+  <g transform="translate(70 1000)"><line x1="0" y1="0" x2="42" y2="0" class="sync"/><text class="small" x="54" y="4">Synchronous HTTP</text><line x1="210" y1="0" x2="252" y2="0" class="event"/><text class="small" x="264" y="4">Asynchronous event</text><line x1="430" y1="0" x2="472" y2="0" class="storage"/><text class="small" x="484" y="4">Owned data / cache</text></g>
+  <text class="small" x="1305" y="1004">Local runtime: Docker Compose</text>
+</svg>
