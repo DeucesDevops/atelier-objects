@@ -6,6 +6,10 @@ The application models a small but complete commerce checkout. A shopper registe
 
 ## Architecture
 
+![Commerce Platform application architecture](docs/architecture.svg)
+
+The diagram separates synchronous HTTP calls, asynchronous domain events, and service-owned data stores. The Mermaid source below provides a simplified text-renderable view of the same architecture.
+
 ```mermaid
 flowchart LR
     Client --> Gateway[API Gateway]
