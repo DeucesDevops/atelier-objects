@@ -1,5 +1,9 @@
 FROM node:20-alpine AS build
 WORKDIR /app
+
+ARG VITE_API_URL=http://localhost:8080
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY shared/typescript/package.json shared/typescript/package.json
 COPY services/api-gateway/package.json services/api-gateway/package.json
@@ -12,10 +16,9 @@ RUN npm ci
 COPY services/web-app services/web-app
 RUN npm --workspace @commerce/web-app run build
 
-FROM node:20-alpine
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build /app/node_modules node_modules
-COPY --from=build /app/services/web-app services/web-app
-WORKDIR /app/services/web-app
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
+COPY services/web-app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/services/web-app/dist /usr/share/nginx/html
+
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]

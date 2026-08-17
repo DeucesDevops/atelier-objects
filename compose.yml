@@ -194,12 +194,14 @@ services:
     ports: ["8080:8080"]
 
   web-app:
-    build: { context: ., dockerfile: services/web-app/Dockerfile }
-    environment:
-      VITE_API_URL: http://localhost:8080
+    build:
+      context: .
+      dockerfile: services/web-app/Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8080
     depends_on:
       api-gateway: { condition: service_started }
-    ports: ["5173:5173"]
+    ports: ["5173:8080"]
     restart: unless-stopped
 
 volumes:

@@ -110,6 +110,25 @@ cd ../analytics-service && python -m pytest
 
 Local service-specific environment examples and focused instructions live in each service directory. Database schema synchronization is enabled for this portfolio workload to keep setup approachable; a production evolution would replace it with explicit migrations.
 
+## Container builds
+
+Every application image uses the same simple two-stage pattern: a build stage creates the deployable artifact, and a smaller runtime stage contains only what is needed to run it.
+
+| Services | Build stage | Runtime stage |
+|---|---|---|
+| API Gateway, Auth, Catalog, Orders, Inventory | Node.js installs dependencies and compiles TypeScript | Node.js runs compiled JavaScript as the non-root `node` user |
+| Payment | Maven packages the Spring Boot JAR | Java 21 JRE runs the JAR as a non-root user |
+| Notification, Analytics | Python creates a virtual environment and installs dependencies | Python runs Uvicorn as a non-root user |
+| Web App | Node.js and Vite create static assets | Unprivileged Nginx serves the assets on container port `8080` |
+
+Build all application images with:
+
+```bash
+docker compose build
+```
+
+The Compose frontend mapping remains `http://localhost:5173`; it maps host port `5173` to the Nginx container's port `8080`. `VITE_API_URL` is a frontend build argument because Vite embeds public configuration when it creates the static assets.
+
 ## Repository boundaries
 
 This is the reusable workload layer. The five later portfolio projects should consume it from separate repositories and add their own infrastructure and delivery concerns. Keeping those concerns separate makes the application useful across AWS, Azure, internal-platform, multi-cloud, and incident-automation demonstrations without duplicating business code.

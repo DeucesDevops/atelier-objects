@@ -1,5 +1,8 @@
 FROM node:20-alpine AS build
 WORKDIR /app
+
+ARG SERVICE
+
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY shared/typescript/package.json shared/typescript/package.json
 COPY services/api-gateway/package.json services/api-gateway/package.json
@@ -9,17 +12,25 @@ COPY services/order-service/package.json services/order-service/package.json
 COPY services/inventory-service/package.json services/inventory-service/package.json
 COPY services/web-app/package.json services/web-app/package.json
 RUN npm ci
-COPY shared/typescript shared/typescript
-COPY services services
-RUN npm run build
 
-FROM node:20-alpine
+COPY shared/typescript shared/typescript
+COPY services/${SERVICE} services/${SERVICE}
+RUN npm run build --workspace @commerce/events \
+    && npm run build --workspace @commerce/${SERVICE} \
+    && npm prune --omit=dev
+
+FROM node:20-alpine AS runtime
 WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build /app/node_modules node_modules
-COPY --from=build /app/shared/typescript/dist shared/typescript/dist
-COPY --from=build /app/shared/typescript/package.json shared/typescript/package.json
-COPY --from=build /app/services services
+
 ARG SERVICE
+ENV NODE_ENV=production
 ENV SERVICE_NAME=$SERVICE
+
+COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/shared/typescript/package.json ./shared/typescript/package.json
+COPY --from=build --chown=node:node /app/shared/typescript/dist ./shared/typescript/dist
+COPY --from=build --chown=node:node /app/services/${SERVICE}/package.json ./services/${SERVICE}/package.json
+COPY --from=build --chown=node:node /app/services/${SERVICE}/dist ./services/${SERVICE}/dist
+
+USER node
 CMD ["sh", "-c", "node services/${SERVICE_NAME}/dist/main.js"]

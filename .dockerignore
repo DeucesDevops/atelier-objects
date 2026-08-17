@@ -1,7 +1,15 @@
 .git
+.github
+.env
+.env.*
+!.env.example
 node_modules
 **/node_modules
 **/dist
 **/target
 **/__pycache__
-.env
+**/.pytest_cache
+coverage
+docs
+*.log
+.DS_Store
