@@ -156,6 +156,8 @@ GitHub Actions uses the `production` environment and requires these repository o
 - `DEPLOY_KNOWN_HOSTS`: trusted host-key line produced by `ssh-keyscan -H HOST`
 - `VITE_API_URL`: externally reachable API URL, such as `http://example:8080`
 
-Jenkins requires an agent labelled `docker` with Docker Compose, Node.js 20+, Java 21, Maven, Python 3, and `curl`. Add the EC2 private key as an SSH credential with ID `commerce-ec2-ssh`, and configure `DEPLOY_HOST`, `DEPLOY_USER`, and `VITE_API_URL`. Like GitHub Actions, a successful `main` build deploys automatically; pull request and non-main branch builds stop after the smoke test.
+Set the GitHub Actions repository variable `ENABLE_EC2_DEPLOYMENT` to `true` after configuring those secrets. Until then, successful builds stop after the smoke test.
+
+Jenkins requires an agent labelled `docker` with Docker Compose, Node.js 22+, Java 21, Maven, Python 3, and `curl`. Add the EC2 private key as an SSH credential with ID `commerce-ec2-ssh`, and configure `DEPLOY_HOST`, `DEPLOY_USER`, and `VITE_API_URL`. Jenkins mirrors the GitHub guard through its `ENABLE_EC2_DEPLOYMENT` parameter. On both systems, deployment runs only for successful `main` builds when explicitly enabled.
 
 The EC2 security group must allow SSH from the runner or Jenkins agent and ports `5173` and `8080` from the intended users. The pipelines preserve the host's `/opt/commerce-platform/current/.env`; on first deployment the bootstrap script generates its database password and JWT secret.

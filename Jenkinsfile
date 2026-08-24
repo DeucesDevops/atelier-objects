@@ -8,6 +8,7 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'ENABLE_EC2_DEPLOYMENT', defaultValue: false, description: 'Deploy successful main-branch builds to EC2')
     string(name: 'DEPLOY_HOST', defaultValue: '', description: 'EC2 DNS name or IP address')
     string(name: 'DEPLOY_USER', defaultValue: 'ubuntu', description: 'SSH user')
     string(name: 'VITE_API_URL', defaultValue: '', description: 'Public API URL, for example http://host:8080')
@@ -36,7 +37,12 @@ pipeline {
       steps { sh 'make smoke' }
     }
     stage('Deploy to EC2') {
-      when { branch 'main' }
+      when {
+        allOf {
+          branch 'main'
+          expression { params.ENABLE_EC2_DEPLOYMENT }
+        }
+      }
       steps {
         sshagent(credentials: ['commerce-ec2-ssh']) {
           sh '''

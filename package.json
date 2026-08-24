@@ -10,5 +10,5 @@
     "start:gateway": "npm --workspace @commerce/api-gateway run start:dev",
     "start:web": "npm --workspace @commerce/web-app run dev"
   },
-  "engines": { "node": ">=20" }
+  "engines": { "node": ">=22" }
 }

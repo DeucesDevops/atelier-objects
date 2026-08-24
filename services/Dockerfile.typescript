@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 
 ARG SERVICE
@@ -19,7 +19,7 @@ RUN npm run build --workspace @commerce/events \
     && npm run build --workspace @commerce/${SERVICE} \
     && npm prune --omit=dev
 
-FROM node:20-alpine AS runtime
+FROM node:22-alpine AS runtime
 WORKDIR /app
 
 RUN apk add --no-cache curl
