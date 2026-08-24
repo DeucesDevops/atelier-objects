@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BarChart3, Bell, CheckCircle2, CreditCard, LogIn, Package, RefreshCw, ShoppingCart, UserPlus, XCircle } from 'lucide-react';
+import { ArrowRight, BarChart3, Bell, Check, CheckCircle2, CreditCard, Grid2X2, LogIn, Minus, Package, Plus, RefreshCw, ShoppingBag, ShoppingCart, UserPlus, XCircle } from 'lucide-react';
 import { addToCart, cartTotal, type CartLine, updateQuantity } from './cart';
 import './styles.css';
 
@@ -57,6 +57,13 @@ type RequestOptions = {
   token?: string;
 };
 
+type Page = 'shop' | 'orders' | 'operations' | 'account';
+
+function pageFromHash(): Page {
+  const page = window.location.hash.replace('#/', '') as Page;
+  return ['shop', 'orders', 'operations', 'account'].includes(page) ? page : 'shop';
+}
+
 async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const response = await fetch(`${apiBase}${path}`, {
     method: options.method ?? 'GET',
@@ -79,7 +86,8 @@ function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value);
 }
 
-function App() {
+export function App() {
+  const [page, setPage] = useState<Page>(pageFromHash);
   const [products, setProducts] = useState<Product[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -96,8 +104,16 @@ function App() {
   const [paymentMethod, setPaymentMethod] = useState('demo-card');
   const [message, setMessage] = useState('Ready to browse the live catalog.');
   const [loading, setLoading] = useState(false);
+  const [addedSku, setAddedSku] = useState<string | null>(null);
 
   const total = useMemo(() => cartTotal(cart), [cart]);
+  const cartCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
+
+  useEffect(() => {
+    const onHashChange = () => setPage(pageFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   async function refresh() {
     const [nextProducts, nextInventory, nextDeliveries, nextAnalytics] = await Promise.all([
@@ -114,6 +130,19 @@ function App() {
 
     if (auth?.token) {
       setOrders(await api<Order[]>('/api/orders', { token: auth.token }));
+    }
+  }
+
+  async function refreshLiveData() {
+    setLoading(true);
+    setMessage('Refreshing live data…');
+    try {
+      await refresh();
+      setMessage('Storefront data is up to date.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Could not refresh live data.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -191,90 +220,64 @@ function App() {
     return inventory.find(item => item.sku === sku);
   }
 
+  function addProduct(product: Product) {
+    const stock = inventoryFor(product.sku);
+    if (stock && stock.available <= 0) {
+      setMessage(`${product.name} is currently out of stock.`);
+      return;
+    }
+    setCart(current => addToCart(current, product));
+    setAddedSku(product.sku);
+    setMessage(`${product.name} added to your bag.`);
+    window.setTimeout(() => setAddedSku(current => current === product.sku ? null : current), 1200);
+  }
+
+  function changeQuantity(item: CartLine, delta: number) {
+    setCart(current => updateQuantity(current, item.sku, item.quantity + delta));
+  }
+
+  function openBag() {
+    window.location.hash = '#/shop';
+    window.setTimeout(() => document.getElementById('checkout')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' }), 0);
+  }
+
   return (
     <main className="shell">
-      <aside className="sidebar">
-        <div>
-          <p className="eyebrow">Commerce Platform</p>
-          <h1>Storefront control room</h1>
-          <p className="lede">Browse, sign in, check out, and watch the platform react across services.</p>
+      <header className="site-header">
+        <div className="brand-block">
+          <a className="wordmark" href="#/shop"><span className="brand-mark">AO</span><strong>Atelier Objects</strong><span className="release-mark">v2 release</span></a>
+          <nav className="primary-nav" aria-label="Primary navigation">
+            <a className={page === 'shop' ? 'active' : ''} href="#/shop"><Grid2X2 size={17} /> Shop <span>01</span></a>
+            <a className={page === 'orders' ? 'active' : ''} href="#/orders"><Package size={17} /> Orders <span>02</span></a>
+            <a className={page === 'operations' ? 'active' : ''} href="#/operations"><BarChart3 size={17} /> Operations <span>03</span></a>
+            <a className={page === 'account' ? 'active' : ''} href="#/account"><LogIn size={17} /> Account <span>04</span></a>
+          </nav>
         </div>
-
-        <section className="auth-panel" aria-label="Account">
-          <div className="section-title">
-            <LogIn size={18} aria-hidden="true" />
-            <span>Account</span>
-          </div>
-          {auth ? (
-            <div className="signed-in">
-              <span>{auth.name}</span>
-              <small>{auth.email}</small>
-              <button className="quiet" onClick={() => { localStorage.removeItem('commerce-auth'); setAuth(null); setOrders([]); }}>
-                Sign out
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={event => event.preventDefault()}>
-              <label>
-                Name
-                <input value={name} onChange={event => setName(event.target.value)} />
-              </label>
-              <label>
-                Email
-                <input value={email} onChange={event => setEmail(event.target.value)} />
-              </label>
-              <label>
-                Password
-                <input type="password" value={password} onChange={event => setPassword(event.target.value)} />
-              </label>
-              <div className="button-row">
-                <button type="button" onClick={() => authenticate('register')} disabled={loading}>
-                  <UserPlus size={16} aria-hidden="true" />
-                  Register
-                </button>
-                <button type="button" className="secondary" onClick={() => authenticate('login')} disabled={loading}>
-                  <LogIn size={16} aria-hidden="true" />
-                  Login
-                </button>
-              </div>
-            </form>
-          )}
-        </section>
-
-        <section className="status-panel" aria-label="Platform status">
-          <div className="section-title">
-            <BarChart3 size={18} aria-hidden="true" />
-            <span>Platform status</span>
-          </div>
-          <div className="metric">
-            <span>Captured revenue</span>
-            <strong>{formatCurrency(analytics?.capturedRevenue ?? 0)}</strong>
-          </div>
-          <div className="metric">
-            <span>Events consumed</span>
-            <strong>{analytics?.totalEvents ?? 0}</strong>
-          </div>
-          <button className="quiet" onClick={() => refresh().catch(error => setMessage(error.message))} title="Refresh live data">
-            <RefreshCw size={16} aria-hidden="true" />
-            Refresh
-          </button>
-        </section>
-      </aside>
+        <button className="bag-button" onClick={openBag} aria-label={`Shopping bag with ${cartCount} items`}>
+          <ShoppingBag size={18} /> <span>Bag</span><strong>{cartCount}</strong>
+        </button>
+      </header>
 
       <section className="workspace">
-        <header className="topbar">
+        <header className="topbar" aria-live="polite">
           <div>
             <span className="live-dot" />
-            Live workload via {apiBase}
+            All systems connected
           </div>
-          <p>{message}</p>
+          <div className="topbar-actions"><p className="system-message">{message}</p><button className="refresh-button" onClick={refreshLiveData} disabled={loading} aria-label="Refresh storefront data"><RefreshCw className={loading ? 'spinning' : ''} size={15} /></button></div>
         </header>
 
+        {page === 'shop' && <>
+        <section className="shop-intro">
+          <p className="eyebrow">Independent objects · London</p>
+          <h1>Useful things,<br />beautifully considered.</h1>
+          <p>Tools for work, sound and daily rituals—selected for how well they earn their place.</p>
+        </section>
         <section className="catalog-section" aria-label="Product catalog">
           <div className="workspace-heading">
             <div>
               <p className="eyebrow">Catalog</p>
-              <h2>Products ready for checkout</h2>
+              <h2>New and noteworthy</h2>
             </div>
             <span>{products.length} active SKUs</span>
           </div>
@@ -296,9 +299,8 @@ function App() {
                       <span>{stock?.available ?? 0} available</span>
                     </div>
                   </div>
-                  <button onClick={() => setCart(current => addToCart(current, product))}>
-                    <ShoppingCart size={16} aria-hidden="true" />
-                    Add
+                  <button className={addedSku === product.sku ? 'added' : ''} onClick={() => addProduct(product)} disabled={(stock?.available ?? 1) <= 0}>
+                    {addedSku === product.sku ? <><Check size={16} /> Added</> : <><Plus size={16} /> Add to bag</>}
                   </button>
                 </article>
               );
@@ -306,8 +308,8 @@ function App() {
           </div>
         </section>
 
-        <section className="flow-grid">
-          <div className="checkout-panel">
+        <section className="flow-grid shop-flow">
+          <div className="checkout-panel" id="checkout">
             <div className="section-title">
               <ShoppingCart size={18} aria-hidden="true" />
               <span>Checkout</span>
@@ -320,13 +322,11 @@ function App() {
                       <strong>{item.name}</strong>
                       <small>{item.sku}</small>
                     </div>
-                    <input
-                      aria-label={`${item.name} quantity`}
-                      min="0"
-                      type="number"
-                      value={item.quantity}
-                      onChange={event => setCart(current => updateQuantity(current, item.sku, Number(event.target.value)))}
-                    />
+                    <div className="quantity-control" aria-label={`${item.name} quantity`}>
+                      <button onClick={() => changeQuantity(item, -1)} aria-label={`Decrease ${item.name} quantity`}><Minus size={14} /></button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => changeQuantity(item, 1)} aria-label={`Increase ${item.name} quantity`}><Plus size={14} /></button>
+                    </div>
                     <span>{formatCurrency(item.price * item.quantity)}</span>
                   </div>
                 ))}
@@ -351,34 +351,34 @@ function App() {
             </button>
           </div>
 
-          <div className="activity-panel">
+          <div className="activity-panel bag-note">
             <div className="section-title">
-              <Package size={18} aria-hidden="true" />
-              <span>Orders</span>
+              <ArrowRight size={18} aria-hidden="true" />
+              <span>What happens next</span>
             </div>
-            <div className="order-list">
-              {orders.length ? orders.slice(0, 4).map(order => (
-                <article className="order-row" key={order.id}>
-                  <div>
-                    <strong>{formatCurrency(order.total)}</strong>
-                    <small>{order.id.slice(0, 8)} · {new Date(order.createdAt).toLocaleTimeString()}</small>
-                  </div>
-                  <span className={`badge ${order.status.toLowerCase()}`}>
-                    {order.status === 'CONFIRMED' ? <CheckCircle2 size={14} aria-hidden="true" /> : <XCircle size={14} aria-hidden="true" />}
-                    {order.status}
-                  </span>
-                  {order.status === 'CONFIRMED' && (
-                    <button className="icon-button" onClick={() => cancelOrder(order.id)} title="Cancel and refund order">
-                      <XCircle size={16} aria-hidden="true" />
-                    </button>
-                  )}
-                </article>
-              )) : <p className="empty">Orders will appear after checkout.</p>}
-            </div>
+            <h3>One order. Six services.</h3>
+            <p>Checkout reserves inventory, captures a payment, emits events, and creates a notification. Follow the transaction on the Operations page.</p>
+            <a className="text-link" href="#/operations">View live operations <ArrowRight size={16} /></a>
           </div>
         </section>
+        </>}
 
-        <section className="insight-grid" aria-label="Service outputs">
+        {page === 'orders' && <section className="page-section" aria-label="Orders">
+          <div className="workspace-heading"><div><p className="eyebrow">Order history</p><h2>Your purchases.</h2></div><span>{orders.length} orders</span></div>
+          <div className="order-list order-page">
+            {orders.length ? orders.map(order => (
+              <article className="order-row" key={order.id}>
+                <div><strong>{formatCurrency(order.total)}</strong><small>{order.id} · {new Date(order.createdAt).toLocaleString()}</small></div>
+                <span className={`badge ${order.status.toLowerCase()}`}>{order.status === 'CONFIRMED' ? <CheckCircle2 size={14} /> : <XCircle size={14} />}{order.status}</span>
+                {order.status === 'CONFIRMED' && <button className="icon-button" onClick={() => cancelOrder(order.id)} title="Cancel and refund order"><XCircle size={16} /></button>}
+              </article>
+            )) : <div className="empty-state"><Package size={28} /><h3>No orders yet.</h3><p>Your completed checkouts will appear here.</p><a className="text-link" href="#/shop">Browse the shop <ArrowRight size={16} /></a></div>}
+          </div>
+        </section>}
+
+        {page === 'operations' && <section className="page-section" aria-label="Service outputs">
+          <div className="workspace-heading"><div><p className="eyebrow">Live system</p><h2>Behind every order.</h2></div><span>{analytics?.totalEvents ?? 0} events processed</span></div>
+          <div className="insight-grid">
           <div>
             <div className="section-title">
               <Package size={18} aria-hidden="true" />
@@ -420,10 +420,25 @@ function App() {
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </section>}
+
+        {page === 'account' && <section className="page-section account-page">
+          <div className="account-copy"><p className="eyebrow">Your account</p><h2>{auth ? `Hello, ${auth.name}.` : 'Welcome back.'}</h2><p>{auth ? 'Track your purchases and manage your session.' : 'Sign in to place orders and keep your purchase history in one place.'}</p></div>
+          <section className="auth-panel" aria-label="Account access">
+            {auth ? <div className="signed-in"><CheckCircle2 size={26} /><strong>{auth.name}</strong><small>{auth.email}</small><button className="secondary" onClick={() => { localStorage.removeItem('commerce-auth'); setAuth(null); setOrders([]); setMessage('You have signed out.'); }}><LogIn size={16} /> Sign out</button></div> :
+            <form onSubmit={event => event.preventDefault()}>
+              <label>Name<input value={name} onChange={event => setName(event.target.value)} autoComplete="name" /></label>
+              <label>Email<input type="email" value={email} onChange={event => setEmail(event.target.value)} autoComplete="email" /></label>
+              <label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" /></label>
+              <div className="button-row"><button type="button" onClick={() => authenticate('login')} disabled={loading}><LogIn size={16} /> Sign in</button><button type="button" className="secondary" onClick={() => authenticate('register')} disabled={loading}><UserPlus size={16} /> Create account</button></div>
+            </form>}
+          </section>
+        </section>}
       </section>
     </main>
   );
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+const rootElement = document.getElementById('root');
+if (rootElement) createRoot(rootElement).render(<App />);
