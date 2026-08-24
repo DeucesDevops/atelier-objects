@@ -49,6 +49,17 @@ flowchart LR
 
 Each data-owning service has its own PostgreSQL database. Services exchange the shared event envelope described in [docs/events.md](docs/events.md); Redpanda supplies a Kafka-compatible local broker.
 
+Compose runs each service-owned database in a separate PostgreSQL container with its own persistent volume. The database ports are bound to `127.0.0.1` so local database tools can connect while the ports remain private when the same Compose stack runs on one EC2 instance.
+
+| Service | PostgreSQL container | Local host port | Database |
+|---|---|---:|---|
+| Auth | `auth-db` | 5433 | `auth` |
+| Catalog | `catalog-db` | 5434 | `catalog` |
+| Inventory | `inventory-db` | 5435 | `inventory` |
+| Order | `order-db` | 5436 | `orders` |
+| Payment | `payment-db` | 5437 | `payments` |
+| Analytics | `analytics-db` | 5438 | `analytics` |
+
 ## Run locally
 
 Prerequisites: Docker with Compose, plus `curl` for the demo scripts.
@@ -132,3 +143,19 @@ The Compose frontend mapping remains `http://localhost:5173`; it maps host port 
 ## Repository boundaries
 
 This is the reusable workload layer. The five later portfolio projects should consume it from separate repositories and add their own infrastructure and delivery concerns. Keeping those concerns separate makes the application useful across AWS, Azure, internal-platform, multi-cloud, and incident-automation demonstrations without duplicating business code.
+
+## CI/CD pipelines
+
+The repository includes equivalent GitHub Actions and Jenkins pipelines. Both validate the Compose and shell configuration, run the Node, Java, and Python test suites, compile the application, build every container, start the complete stack, and exercise the seed and checkout demo. Successful `main` builds can then deploy the Compose release to an Ubuntu EC2 host.
+
+GitHub Actions uses the `production` environment and requires these repository or environment secrets:
+
+- `DEPLOY_HOST`: EC2 public DNS name or IP address
+- `DEPLOY_USER`: SSH user, normally `ubuntu`
+- `DEPLOY_SSH_KEY`: private key accepted by the host
+- `DEPLOY_KNOWN_HOSTS`: trusted host-key line produced by `ssh-keyscan -H HOST`
+- `VITE_API_URL`: externally reachable API URL, such as `http://example:8080`
+
+Jenkins requires an agent labelled `docker` with Docker Compose, Node.js 20+, Java 21, Maven, Python 3, and `curl`. Add the EC2 private key as an SSH credential with ID `commerce-ec2-ssh`, and configure `DEPLOY_HOST`, `DEPLOY_USER`, and `VITE_API_URL`. Like GitHub Actions, a successful `main` build deploys automatically; pull request and non-main branch builds stop after the smoke test.
+
+The EC2 security group must allow SSH from the runner or Jenkins agent and ports `5173` and `8080` from the intended users. The pipelines preserve the host's `/opt/commerce-platform/current/.env`; on first deployment the bootstrap script generates its database password and JWT secret.

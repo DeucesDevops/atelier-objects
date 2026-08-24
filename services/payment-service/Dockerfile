@@ -9,7 +9,9 @@ RUN mvn -q -DskipTests package
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
-RUN addgroup -S app && adduser -S app -G app
+RUN apk add --no-cache curl \
+    && addgroup -S app \
+    && adduser -S app -G app
 COPY --from=build --chown=app:app /app/target/payment-service-1.0.0.jar app.jar
 
 USER app
