@@ -3,6 +3,7 @@
 set -Eeuo pipefail
 
 readonly HEALTH_URL="${HEALTH_URL:-http://localhost:8080/health}"
+readonly PAYMENT_HEALTH_URL="${PAYMENT_HEALTH_URL:-http://localhost:8085/health}"
 readonly STARTUP_ATTEMPTS="${STARTUP_ATTEMPTS:-60}"
 
 cleanup() {
@@ -19,7 +20,8 @@ trap cleanup EXIT
 docker compose up --build --detach
 
 for ((attempt = 1; attempt <= STARTUP_ATTEMPTS; attempt++)); do
-  if curl --fail --silent --show-error "${HEALTH_URL}" >/dev/null; then
+  if curl --fail --silent --show-error "${HEALTH_URL}" >/dev/null \
+    && curl --fail --silent --show-error "${PAYMENT_HEALTH_URL}" >/dev/null; then
     ./commerce-demo/seed.sh
     ./commerce-demo/demo-flow.sh
     exit 0
@@ -27,5 +29,5 @@ for ((attempt = 1; attempt <= STARTUP_ATTEMPTS; attempt++)); do
   sleep 5
 done
 
-printf 'API Gateway did not become healthy after %s attempts.\n' "${STARTUP_ATTEMPTS}" >&2
+printf 'API Gateway and payment service did not become healthy after %s attempts.\n' "${STARTUP_ATTEMPTS}" >&2
 exit 1
