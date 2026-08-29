@@ -54,38 +54,77 @@ jobs:
       - name: Exercise the complete stack
         run: make smoke
 
-  deploy:
-    name: Deploy to EC2
+  publish:
+    name: Publish ${{ matrix.service }} image
     needs: smoke
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ENABLE_EC2_DEPLOYMENT == 'true'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    environment: production
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: auth-service
+            context: .
+            dockerfile: services/Dockerfile.typescript
+            build-args: SERVICE=auth-service
+          - service: catalog-service
+            context: .
+            dockerfile: services/Dockerfile.typescript
+            build-args: SERVICE=catalog-service
+          - service: inventory-service
+            context: .
+            dockerfile: services/Dockerfile.typescript
+            build-args: SERVICE=inventory-service
+          - service: order-service
+            context: .
+            dockerfile: services/Dockerfile.typescript
+            build-args: SERVICE=order-service
+          - service: api-gateway
+            context: .
+            dockerfile: services/Dockerfile.typescript
+            build-args: SERVICE=api-gateway
+          - service: payment-service
+            context: services/payment-service
+            dockerfile: services/payment-service/Dockerfile
+            build-args: ''
+          - service: notification-service
+            context: .
+            dockerfile: services/notification-service/Dockerfile
+            build-args: ''
+          - service: analytics-service
+            context: .
+            dockerfile: services/analytics-service/Dockerfile
+            build-args: ''
+          - service: web-app
+            context: .
+            dockerfile: services/web-app/Dockerfile
+            build-args: ''
     steps:
       - uses: actions/checkout@v7
-      - name: Configure SSH
-        env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-        run: |
-          install -m 700 -d ~/.ssh
-          install -m 600 /dev/null ~/.ssh/deploy_key
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-      - name: Upload release
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          tar --exclude=.git --exclude=.env --exclude=node_modules --exclude=screenshots -czf /tmp/commerce-platform.tgz .
-          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" 'sudo install -d -o "$USER" -g "$USER" /opt/commerce-platform/current'
-          scp -i ~/.ssh/deploy_key /tmp/commerce-platform.tgz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/commerce-platform.tgz"
-          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" 'tar -xzf /tmp/commerce-platform.tgz -C /opt/commerce-platform/current && rm /tmp/commerce-platform.tgz'
-      - name: Start release and verify health
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-        run: |
-          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "cd /opt/commerce-platform/current && VITE_API_URL='$VITE_API_URL' ./scripts/deploy-compose.sh"
-          curl --fail --retry 12 --retry-delay 10 --retry-all-errors "$VITE_API_URL/health"
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Generate image tags
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/atelier-objects-${{ matrix.service }}
+          tags: |
+            type=sha,format=long,prefix=
+            type=raw,value=latest
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          build-args: ${{ matrix.service == 'web-app' && format('VITE_API_URL={0}', secrets.VITE_API_URL) || matrix.build-args }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
+
+ 

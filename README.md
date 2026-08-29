@@ -146,9 +146,16 @@ This is the reusable workload layer. The five later portfolio projects should co
 
 ## CI/CD pipelines
 
-The repository includes equivalent GitHub Actions and Jenkins pipelines. Both validate the Compose and shell configuration, run the Node, Java, and Python test suites, compile the application, build every container, start the complete stack, and exercise the seed and checkout demo. Successful `main` builds can then deploy the Compose release to an Ubuntu EC2 host.
+The repository includes GitHub Actions and Jenkins pipelines. Both validate the Compose and shell configuration, run the Node, Java, and Python test suites, compile the application, build every container, start the complete stack, and exercise the seed and checkout demo. After a successful GitHub Actions smoke test on `main`, all nine application images are published to Docker Hub with both the full commit SHA and `latest` tags. Successful `main` builds can then deploy the Compose release to an Ubuntu EC2 host.
 
-GitHub Actions uses the `production` environment and requires these repository or environment secrets:
+Docker Hub publishing requires these GitHub Actions repository secrets:
+
+- `DOCKERHUB_USERNAME`: Docker Hub account or organization name
+- `DOCKERHUB_TOKEN`: Docker Hub personal access token with read/write permission
+
+Images use the repository convention `<DOCKERHUB_USERNAME>/atelier-objects-<service>`, for example `acme/atelier-objects-api-gateway:latest` and `acme/atelier-objects-api-gateway:<full-commit-sha>`.
+
+EC2 deployment uses the `production` environment and requires these repository or environment secrets:
 
 - `DEPLOY_HOST`: EC2 public DNS name or IP address
 - `DEPLOY_USER`: SSH user, normally `ubuntu`
@@ -156,7 +163,7 @@ GitHub Actions uses the `production` environment and requires these repository o
 - `DEPLOY_KNOWN_HOSTS`: trusted host-key line produced by `ssh-keyscan -H HOST`
 - `VITE_API_URL`: externally reachable API URL, such as `http://example:8080`
 
-Set the GitHub Actions repository variable `ENABLE_EC2_DEPLOYMENT` to `true` after configuring those secrets. Until then, successful builds stop after the smoke test.
+Set the GitHub Actions repository variable `ENABLE_EC2_DEPLOYMENT` to `true` after configuring the deployment secrets. Until then, successful `main` builds stop after publishing the Docker Hub images.
 
 Jenkins requires an agent labelled `docker` with Docker Compose, Node.js 22+, Java 21, Maven, Python 3, and `curl`. Add the EC2 private key as an SSH credential with ID `commerce-ec2-ssh`, and configure `DEPLOY_HOST`, `DEPLOY_USER`, and `VITE_API_URL`. Jenkins mirrors the GitHub guard through its `ENABLE_EC2_DEPLOYMENT` parameter. On both systems, deployment runs only for successful `main` builds when explicitly enabled.
 
