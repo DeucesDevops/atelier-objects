@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+<title id="title">Local Docker architecture</title>
+<desc id="desc">Nine application containers + six PostgreSQL containers + Redis + Redpanda = 17 services. CURRENT CONFIGURATION  |  Based on compose.yml and source; runtime was not retested for this documentation task.</desc>
+<rect width="1800" height="1200" fill="#08111f"/>
+<rect x="56" y="42" width="6" height="92" rx="0" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="82" y="44" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="700" fill="#71d6ff">ATELIER OBJECTS  /  COMMERCE PLATFORM</text>
+<text x="80" y="76" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="40" font-weight="700" fill="#f1f5f9">Local Docker architecture</text>
+<text x="80" y="132" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Nine application containers + six PostgreSQL containers + Redis + Redpanda = 17 services</text>
+<polyline points="60,1108 1740,1108" fill="none" stroke="#334761" stroke-width="3" stroke-linejoin="round"/>
+<text x="70" y="1130" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#a7b8ce">CURRENT CONFIGURATION  |  Based on compose.yml and source; runtime was not retested for this documentation task.</text>
+<text x="70" y="1160" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="400" fill="#a7b8ce">16 OCT 2026  |  Solid: request / data   Dashed: event / control   |  Details: docs/architecture/README.md</text>
+<rect x="70" y="200" width="300" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="85" y="219" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="100" y="220" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Shopper browser</text>
+<text x="95" y="258" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">UI: localhost:5173</text>
+<text x="95" y="286" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">API: localhost:8080</text>
+<rect x="565" y="200" width="420" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="580" y="219" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="595" y="220" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">web-app</text>
+<text x="590" y="258" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">React build served by Nginx</text>
+<text x="590" y="286" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Host :5173 → container :8080</text>
+<rect x="1210" y="200" width="510" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1225" y="219" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1240" y="220" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">api-gateway</text>
+<text x="1235" y="258" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">NestJS :8080</text>
+<text x="1235" y="286" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Routes all seven domain APIs</text>
+<polyline points="370,240 565,240" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="565.0,240.0 553.3,245.7 553.3,234.3" fill="#71d6ff"/>
+<text x="408" y="209" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#71d6ff">HTML / JS</text>
+<polyline points="220,320 220,365 1465,365 1465,320" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1465.0,320.0 1470.7,331.7 1459.3,331.7" fill="#71d6ff"/>
+<text x="585" y="337" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="400" fill="#71d6ff">Browser fetches API directly; Nginx currently has no /api proxy</text>
+<rect x="45" y="405" width="1710" height="285" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="423" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">APPLICATION NETWORK  /  Gateway routes by /api/{service}</text>
+<polyline points="1650,320 1650,462 180,462" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="180,462 180,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="180.0,505.0 174.3,493.3 185.7,493.3" fill="#71d6ff"/>
+<rect x="70" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="85" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="100" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Auth</text>
+<text x="95" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:3001 / NestJS</text>
+<text x="95" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="420,462 420,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="420.0,505.0 414.3,493.3 425.7,493.3" fill="#71d6ff"/>
+<rect x="310" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="325" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="340" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Catalog</text>
+<text x="335" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:3002 / NestJS</text>
+<text x="335" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="660,462 660,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="660.0,505.0 654.3,493.3 665.7,493.3" fill="#71d6ff"/>
+<rect x="550" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="565" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="580" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Orders</text>
+<text x="575" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:3003 / NestJS</text>
+<text x="575" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="900,462 900,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="900.0,505.0 894.3,493.3 905.7,493.3" fill="#71d6ff"/>
+<rect x="790" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="805" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="820" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Inventory</text>
+<text x="815" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:3004 / NestJS</text>
+<text x="815" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="1140,462 1140,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1140.0,505.0 1134.3,493.3 1145.7,493.3" fill="#71d6ff"/>
+<rect x="1030" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1045" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1060" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Payment</text>
+<text x="1055" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:8085 / Java</text>
+<text x="1055" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="1380,462 1380,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1380.0,505.0 1374.3,493.3 1385.7,493.3" fill="#71d6ff"/>
+<rect x="1270" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1285" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1300" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Notification</text>
+<text x="1295" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:8001 / Python</text>
+<text x="1295" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<polyline points="1620,462 1620,505" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1620.0,505.0 1614.3,493.3 1625.7,493.3" fill="#71d6ff"/>
+<rect x="1510" y="505" width="220" height="135" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1525" y="524" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1540" y="525" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Analytics</text>
+<text x="1535" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">:8002 / Python</text>
+<text x="1535" y="591" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GET /health</text>
+<rect x="45" y="725" width="1710" height="270" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="743" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">BACKING SERVICES  /  Shared Compose network; service-specific connection URLs</text>
+<rect x="70" y="785" width="900" height="155" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="85" y="804" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="100" y="805" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Six isolated PostgreSQL databases</text>
+<text x="95" y="843" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">auth • catalog • inventory • orders • payments • analytics</text>
+<text x="95" y="871" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Six named volumes; host ports 5433–5438 bind to 127.0.0.1</text>
+<text x="95" y="899" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Each container listens on :5432</text>
+<rect x="1000" y="785" width="300" height="155" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="1015" y="804" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="1030" y="805" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Redis :6379</text>
+<text x="1025" y="843" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Auth session hints</text>
+<text x="1025" y="871" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Catalog cache</text>
+<text x="1025" y="899" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">No named volume</text>
+<rect x="1330" y="785" width="390" height="155" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="1345" y="804" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="1360" y="805" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">Redpanda :9092</text>
+<text x="1355" y="843" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Topic: commerce.domain-events</text>
+<text x="1355" y="871" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Host Kafka port :19092</text>
+<text x="1355" y="899" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">No persistent volume in Compose</text>
+<text x="70" y="1025" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="21" font-weight="400" fill="#ffcc6b">Compose publishes domain-service ports, Redis and Kafka on host interfaces; this is a local demo configuration.</text>
+<text x="70" y="1060" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Persistent today: PostgreSQL only. Notification delivery history is memory-only. Event and recovery paths are shown separately.</text>
+</svg>

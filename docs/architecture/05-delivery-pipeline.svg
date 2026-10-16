@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+<title id="title">Build, publish and deploy</title>
+<desc id="desc">Current Docker workflow and proposed Kubernetes workflow are shown as separate paths. CURRENT + PROPOSED  |  Workflow files exist; no successful remote pipeline or cloud deployment was verified in this task.</desc>
+<rect width="1800" height="1200" fill="#08111f"/>
+<rect x="56" y="42" width="6" height="92" rx="0" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="82" y="44" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="700" fill="#71d6ff">ATELIER OBJECTS  /  COMMERCE PLATFORM</text>
+<text x="80" y="76" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="40" font-weight="700" fill="#f1f5f9">Build, publish and deploy</text>
+<text x="80" y="132" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Current Docker workflow and proposed Kubernetes workflow are shown as separate paths</text>
+<polyline points="60,1108 1740,1108" fill="none" stroke="#334761" stroke-width="3" stroke-linejoin="round"/>
+<text x="70" y="1130" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#a7b8ce">CURRENT + PROPOSED  |  Workflow files exist; no successful remote pipeline or cloud deployment was verified in this task.</text>
+<text x="70" y="1160" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="400" fill="#a7b8ce">16 OCT 2026  |  Solid: request / data   Dashed: event / control   |  Details: docs/architecture/README.md</text>
+<rect x="45" y="200" width="1710" height="300" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="218" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">CURRENT REPOSITORY  /  GitHub Actions; Jenkins provides an alternative validation + EC2 path</text>
+<rect x="70" y="270" width="370" height="155" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="85" y="289" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="100" y="290" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Source + tests</text>
+<text x="95" y="328" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Node / Java / Python</text>
+<text x="95" y="356" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Compose + script validation</text>
+<rect x="500" y="270" width="370" height="155" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="515" y="289" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="530" y="290" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Build + Compose smoke</text>
+<text x="525" y="328" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Nine application images</text>
+<text x="525" y="356" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Seed + checkout demo</text>
+<rect x="930" y="270" width="370" height="155" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="945" y="289" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="960" y="290" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Docker Hub publishing</text>
+<text x="955" y="328" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">GitHub Actions on main</text>
+<text x="955" y="356" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Commit SHA + latest tags</text>
+<rect x="1360" y="270" width="370" height="155" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1375" y="289" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1390" y="290" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">EC2 Compose option</text>
+<text x="1385" y="328" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Existing SSH deployment path</text>
+<text x="1385" y="356" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Enablement / secrets required</text>
+<polyline points="440,345 500,345" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="500.0,345.0 488.3,350.7 488.3,339.3" fill="#71d6ff"/>
+<polyline points="870,345 930,345" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="930.0,345.0 918.3,350.7 918.3,339.3" fill="#71d6ff"/>
+<polyline points="1300,345 1360,345" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1360.0,345.0 1348.3,350.7 1348.3,339.3" fill="#71d6ff"/>
+<rect x="45" y="545" width="1710" height="300" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="563" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">PROPOSED KOPS DELIVERY  /  One verified release manifest contains all nine ECR image digests</text>
+<rect x="70" y="615" width="370" height="155" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="85" y="634" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="100" y="635" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Required gates</text>
+<text x="95" y="673" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Tests + build + scans</text>
+<text x="95" y="701" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Disposable integration stack</text>
+<rect x="500" y="615" width="370" height="155" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="515" y="634" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="530" y="635" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">ECR immutable release</text>
+<text x="525" y="673" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Build once; record digests</text>
+<text x="525" y="701" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Verify images on AWS CPU</text>
+<rect x="930" y="615" width="370" height="155" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="945" y="634" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="960" y="635" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Helm development</text>
+<text x="955" y="673" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Consume Terraform outputs</text>
+<text x="955" y="701" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Rollout + checkout smoke</text>
+<rect x="1360" y="615" width="370" height="155" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="1375" y="634" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="1390" y="635" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Promote / roll back</text>
+<text x="1385" y="673" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Same digests in next env</text>
+<text x="1385" y="701" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Previous Helm revision</text>
+<polyline points="440,690 500,690" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="500.0,690.0 488.3,695.7 488.3,684.3" fill="#b79bff"/>
+<polyline points="870,690 930,690" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="930.0,690.0 918.3,695.7 918.3,684.3" fill="#b79bff"/>
+<polyline points="1300,690 1360,690" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1360.0,690.0 1348.3,695.7 1348.3,684.3" fill="#b79bff"/>
+<rect x="70" y="915" width="1000" height="130" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="85" y="934" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="100" y="935" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Infrastructure lifecycle · separate from application release</text>
+<text x="95" y="973" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Terraform foundation → kOps YAML → generated Terraform → apply → validate cluster</text>
+<text x="95" y="1001" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">ALB, DNS, RDS, Redis, state, IAM and runner access are infrastructure outputs</text>
+<rect x="1120" y="915" width="600" height="130" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="1135" y="934" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="1150" y="935" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">Readiness before automation</text>
+<text x="1145" y="973" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Relative frontend API base + ALB /api routes</text>
+<text x="1145" y="1001" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Secrets, migrations, probes and broker persistence</text>
+</svg>

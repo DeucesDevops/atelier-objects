@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+<title id="title">AWS architecture · kOps on EC2</title>
+<desc id="desc">Proposed learning environment: two AZs for the network; one control-plane node; no high-availability claim. PROPOSED TARGET  |  Terraform owns AWS resources; cloud infrastructure is not deployed by this documentation.</desc>
+<rect width="1800" height="1200" fill="#08111f"/>
+<rect x="56" y="42" width="6" height="92" rx="0" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="82" y="44" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="700" fill="#71d6ff">ATELIER OBJECTS  /  COMMERCE PLATFORM</text>
+<text x="80" y="76" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="40" font-weight="700" fill="#f1f5f9">AWS architecture · kOps on EC2</text>
+<text x="80" y="132" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Proposed learning environment: two AZs for the network; one control-plane node; no high-availability claim</text>
+<polyline points="60,1108 1740,1108" fill="none" stroke="#334761" stroke-width="3" stroke-linejoin="round"/>
+<text x="70" y="1130" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#a7b8ce">PROPOSED TARGET  |  Terraform owns AWS resources; cloud infrastructure is not deployed by this documentation.</text>
+<text x="70" y="1160" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="400" fill="#a7b8ce">16 OCT 2026  |  Solid: request / data   Dashed: event / control   |  Details: docs/architecture/README.md</text>
+<rect x="600" y="195" width="700" height="110" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="615" y="214" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="630" y="215" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Shopper + Route 53</text>
+<text x="625" y="253" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">DNS resolves the application domain; browser sends HTTPS</text>
+<rect x="70" y="195" width="460" height="120" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="85" y="214" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="100" y="215" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Supporting AWS resources</text>
+<text x="95" y="253" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">ECR / Secrets Manager / IAM + OIDC</text>
+<text x="95" y="281" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">State stores + etcd backups</text>
+<rect x="45" y="345" width="1710" height="730" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="363" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">VPC  /  Public subnets across AZ A + AZ B; private compute + isolated data subnets</text>
+<rect x="600" y="405" width="700" height="110" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="615" y="424" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="630" y="425" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Public ALB + ACM</text>
+<text x="625" y="463" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">HTTPS :443  |  /api and /api/* → gateway  |  /* → web</text>
+<rect x="1350" y="405" width="370" height="110" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="1365" y="424" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="1380" y="425" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Public egress</text>
+<text x="1375" y="463" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">NAT Gateway + IGW</text>
+<text x="1375" y="491" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Outbound private-node access</text>
+<polyline points="950,305 950,405" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="950.0,405.0 944.3,393.3 955.7,393.3" fill="#71d6ff"/>
+<rect x="75" y="600" width="390" height="140" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="90" y="619" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="105" y="620" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Private control plane</text>
+<text x="100" y="658" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">kOps-managed EC2 + etcd</text>
+<text x="100" y="686" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">One node in AZ A for learning</text>
+<text x="100" y="714" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Restricted Kubernetes API access</text>
+<rect x="535" y="600" width="1185" height="140" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="550" y="619" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="565" y="620" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Private workers · EC2 instance groups across AZ A + AZ B</text>
+<text x="560" y="658" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">web + gateway + seven domain services; Redpanda StatefulSet → EBS PVC</text>
+<text x="560" y="686" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Application ALB sends HTTP to worker NodePort targets</text>
+<text x="560" y="714" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">NAT provides outbound access; workers pull application images from ECR</text>
+<polyline points="950,515 950,600" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="950.0,600.0 944.3,588.3 955.7,588.3" fill="#71d6ff"/>
+<text x="970" y="550" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="17" font-weight="400" fill="#71d6ff">HTTP to worker targets</text>
+<polyline points="465,670 535,670" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="535.0,670.0 523.3,675.7 523.3,664.3" fill="#b79bff"/>
+<polyline points="1550,600 1550,515" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1550.0,515.0 1555.7,526.7 1544.3,526.7" fill="#ffcc6b"/>
+<polyline points="865,740 865,800 480,800 480,855" fill="none" stroke="#7ee3bb" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="480.0,855.0 474.3,843.3 485.7,843.3" fill="#7ee3bb"/>
+<polyline points="865,800 1260,800 1260,855" fill="none" stroke="#7ee3bb" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1260.0,855.0 1254.3,843.3 1265.7,843.3" fill="#7ee3bb"/>
+<text x="885" y="765" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#7ee3bb">Application data connections</text>
+<rect x="75" y="855" width="950" height="165" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="90" y="874" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="105" y="875" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Private RDS PostgreSQL</text>
+<text x="100" y="913" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">One instance; six logical databases and separate service users</text>
+<text x="100" y="941" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Backups + restore rehearsal; single-instance learning baseline</text>
+<text x="100" y="969" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Subnet group spans AZs; the instance is not automatically Multi-AZ</text>
+<rect x="1080" y="855" width="640" height="165" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="1095" y="874" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="1110" y="875" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Private ElastiCache Redis</text>
+<text x="1105" y="913" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Auth hints + catalog cache; single-node learning baseline</text>
+<text x="1105" y="941" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">TLS/auth client setup must be implemented and tested</text>
+<text x="1105" y="969" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Separate secrets and data for each environment</text>
+</svg>
