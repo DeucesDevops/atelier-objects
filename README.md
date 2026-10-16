@@ -8,6 +8,8 @@ The application models a small but complete commerce checkout. A shopper registe
 
 ![Commerce Platform application architecture](docs/architecture.svg)
 
+The [documentation hub](docs/README.md) contains Docker, proposed AWS/kOps and Kubernetes diagrams, checkout/event flows, delivery and recovery images, a [ten-stage implementation plan](docs/plans/implementation-plan.md), and the [application/platform folder structure and scaffold status](docs/plans/folder-structure.md). The cloud diagrams are planning artifacts; they do not imply deployed infrastructure.
+
 The diagram separates synchronous HTTP calls, asynchronous domain events, and service-owned data stores. The Mermaid source below provides a simplified text-renderable view of the same architecture.
 
 ```mermaid

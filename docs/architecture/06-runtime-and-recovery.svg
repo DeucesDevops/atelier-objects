@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+<title id="title">Runtime configuration, visibility and recovery</title>
+<desc id="desc">Plan secret delivery, operational signals and restoration separately for each stateful component. PROPOSED OPERATIONS  |  Current code has basic /health endpoints; full metrics, readiness and restore evidence remain work.</desc>
+<rect width="1800" height="1200" fill="#08111f"/>
+<rect x="56" y="42" width="6" height="92" rx="0" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="82" y="44" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="700" fill="#71d6ff">ATELIER OBJECTS  /  COMMERCE PLATFORM</text>
+<text x="80" y="76" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="40" font-weight="700" fill="#f1f5f9">Runtime configuration, visibility and recovery</text>
+<text x="80" y="132" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Plan secret delivery, operational signals and restoration separately for each stateful component</text>
+<polyline points="60,1108 1740,1108" fill="none" stroke="#334761" stroke-width="3" stroke-linejoin="round"/>
+<text x="70" y="1130" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#a7b8ce">PROPOSED OPERATIONS  |  Current code has basic /health endpoints; full metrics, readiness and restore evidence remain work.</text>
+<text x="70" y="1160" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="400" fill="#a7b8ce">16 OCT 2026  |  Solid: request / data   Dashed: event / control   |  Details: docs/architecture/README.md</text>
+<rect x="45" y="200" width="1710" height="245" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="218" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">RUNTIME SECRET DELIVERY  /  Values arrive when processes start, never through image build arguments</text>
+<rect x="70" y="265" width="460" height="120" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="85" y="284" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="100" y="285" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">AWS Secrets Manager</text>
+<text x="95" y="323" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Terraform creates secret resources</text>
+<text x="95" y="351" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Values stored outside tracked files</text>
+<rect x="655" y="265" width="490" height="120" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="670" y="284" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="685" y="285" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">External Secrets Operator</text>
+<text x="680" y="323" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">OIDC / IAM identity reads scoped paths</text>
+<text x="680" y="351" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Synchronizes Kubernetes Secrets</text>
+<rect x="1270" y="265" width="450" height="120" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="1285" y="284" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="1300" y="285" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Application pods</text>
+<text x="1295" y="323" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">DATABASE_URL / JWT_SECRET / Redis</text>
+<text x="1295" y="351" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Restart after secret refresh</text>
+<polyline points="530,325 655,325" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="655.0,325.0 643.3,330.7 643.3,319.3" fill="#b79bff"/>
+<polyline points="1145,325 1270,325" fill="none" stroke="#b79bff" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="1270.0,325.0 1258.3,330.7 1258.3,319.3" fill="#b79bff"/>
+<rect x="45" y="490" width="1710" height="245" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="508" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">VISIBILITY  /  Planned collection; emitting logs is not the same as retaining and querying them</text>
+<rect x="70" y="555" width="460" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="85" y="574" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="100" y="575" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Services + infrastructure</text>
+<text x="95" y="613" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Add metrics / dependency readiness</text>
+<text x="95" y="641" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Instrument HTTP and event consumers</text>
+<rect x="655" y="555" width="490" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="670" y="574" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="685" y="575" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Collectors</text>
+<text x="680" y="613" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Prometheus + log agent</text>
+<text x="680" y="641" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Broker lag, DB and node signals</text>
+<rect x="1270" y="555" width="450" height="120" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1285" y="574" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1300" y="575" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Dashboards + alerts</text>
+<text x="1295" y="613" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Grafana + chosen log backend</text>
+<text x="1295" y="641" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Exercise alerts with controlled failures</text>
+<polyline points="530,615 655,615" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="655.0,615.0 643.3,620.7 643.3,609.3" fill="#71d6ff"/>
+<polyline points="1145,615 1270,615" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1270.0,615.0 1258.3,620.7 1258.3,609.3" fill="#71d6ff"/>
+<rect x="45" y="780" width="1710" height="300" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="798" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">RECOVERY PLAN  /  A Helm rollback, a database restore and a cluster restore solve different problems</text>
+<rect x="70" y="845" width="520" height="175" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="85" y="864" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="100" y="865" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">PostgreSQL</text>
+<text x="95" y="903" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Six databases + service users</text>
+<text x="95" y="931" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Backups; rehearse isolated restore</text>
+<text x="95" y="959" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Cross-service consistency needs a plan</text>
+<rect x="635" y="845" width="520" height="175" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="650" y="864" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="665" y="865" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Kafka + consumers</text>
+<text x="660" y="903" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Persist Redpanda data with EBS</text>
+<text x="660" y="931" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Retain offsets and event history</text>
+<text x="660" y="959" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Replay can duplicate notifications</text>
+<rect x="1200" y="845" width="520" height="175" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="1215" y="864" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="1230" y="865" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Cluster + application</text>
+<text x="1225" y="903" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Private kOps state + etcd backups</text>
+<text x="1225" y="931" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Terraform state + Git + image digests</text>
+<text x="1225" y="959" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Recreate infra; Helm restores workloads</text>
+</svg>

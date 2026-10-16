@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+<title id="title">Checkout, compensation and domain events</title>
+<desc id="desc">Synchronous checkout coordinates independent databases; asynchronous consumers build notifications and analytics. CURRENT APPLICATION FLOW  |  Publishing is best effort; this design does not provide atomic database + event commits.</desc>
+<rect width="1800" height="1200" fill="#08111f"/>
+<rect x="56" y="42" width="6" height="92" rx="0" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="82" y="44" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="700" fill="#71d6ff">ATELIER OBJECTS  /  COMMERCE PLATFORM</text>
+<text x="80" y="76" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="40" font-weight="700" fill="#f1f5f9">Checkout, compensation and domain events</text>
+<text x="80" y="132" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Synchronous checkout coordinates independent databases; asynchronous consumers build notifications and analytics</text>
+<polyline points="60,1108 1740,1108" fill="none" stroke="#334761" stroke-width="3" stroke-linejoin="round"/>
+<text x="70" y="1130" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="18" font-weight="400" fill="#a7b8ce">CURRENT APPLICATION FLOW  |  Publishing is best effort; this design does not provide atomic database + event commits.</text>
+<text x="70" y="1160" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="16" font-weight="400" fill="#a7b8ce">16 OCT 2026  |  Solid: request / data   Dashed: event / control   |  Details: docs/architecture/README.md</text>
+<rect x="70" y="220" width="370" height="140" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="85" y="239" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="100" y="240" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">1 · Create order</text>
+<text x="95" y="278" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Gateway → Orders</text>
+<text x="95" y="306" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Save PENDING to orders DB</text>
+<rect x="500" y="220" width="370" height="140" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="515" y="239" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="530" y="240" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">2 · Reserve stock</text>
+<text x="525" y="278" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Orders → Inventory</text>
+<text x="525" y="306" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Transactional reservation</text>
+<rect x="930" y="220" width="370" height="140" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="945" y="239" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="960" y="240" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">3 · Simulated payment</text>
+<text x="955" y="278" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Orders → Payment</text>
+<text x="955" y="306" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Authorize, then capture</text>
+<rect x="1360" y="220" width="370" height="140" rx="14" fill="#111f33" stroke="#71d6ff" stroke-width="2"/>
+<rect x="1375" y="239" width="4" height="26" rx="1" fill="#71d6ff" stroke="#71d6ff" stroke-width="2"/>
+<text x="1390" y="240" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">4 · Confirm order</text>
+<text x="1385" y="278" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Orders saves CONFIRMED</text>
+<text x="1385" y="306" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Return to shopper</text>
+<polyline points="440,290 500,290" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="500.0,290.0 488.3,295.7 488.3,284.3" fill="#71d6ff"/>
+<polyline points="870,290 930,290" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="930.0,290.0 918.3,295.7 918.3,284.3" fill="#71d6ff"/>
+<polyline points="1300,290 1360,290" fill="none" stroke="#71d6ff" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1360.0,290.0 1348.3,295.7 1348.3,284.3" fill="#71d6ff"/>
+<rect x="70" y="425" width="800" height="165" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="85" y="444" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="100" y="445" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="26" font-weight="700" fill="#f1f5f9">Failure path · tested scenario to demonstrate</text>
+<text x="95" y="483" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Payment method &quot;decline&quot; → order marked FAILED</text>
+<text x="95" y="511" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Orders attempts inventory release and emits order.failed</text>
+<text x="95" y="539" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Failure compensation is best effort; reconciliation is a future task</text>
+<rect x="920" y="425" width="800" height="165" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="935" y="444" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="950" y="445" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="26" font-weight="700" fill="#f1f5f9">Cancellation path</text>
+<text x="945" y="483" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Request refund if paymentId exists; attempt stock release</text>
+<text x="945" y="511" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Save CANCELLED and emit order.cancelled</text>
+<text x="945" y="539" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Payment and order writes are not one distributed transaction</text>
+<rect x="45" y="645" width="1710" height="415" rx="18" fill="#0c1829" stroke="#334761" stroke-width="2"/>
+<text x="67" y="663" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="19" font-weight="700" fill="#a7b8ce">ASYNCHRONOUS PATH  /  One Kafka-compatible topic; independent consumer groups</text>
+<rect x="70" y="710" width="780" height="120" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="85" y="729" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="100" y="730" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="23" font-weight="700" fill="#f1f5f9">Producers: Catalog, Inventory, Orders, Payment</text>
+<text x="95" y="768" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Plus Notification publishes notification.sent</text>
+<text x="95" y="796" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Event envelope: id, type, source, occurredAt, data</text>
+<rect x="1020" y="710" width="700" height="120" rx="14" fill="#111f33" stroke="#ffcc6b" stroke-width="2"/>
+<rect x="1035" y="729" width="4" height="26" rx="1" fill="#ffcc6b" stroke="#ffcc6b" stroke-width="2"/>
+<text x="1050" y="730" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#f1f5f9">Redpanda / commerce.domain-events</text>
+<text x="1045" y="768" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Consumer groups: notification-service + analytics-service</text>
+<text x="1045" y="796" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Local Compose broker has no persistent volume</text>
+<polyline points="850,770 1020,770" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="1020.0,770.0 1008.3,775.7 1008.3,764.3" fill="#ffcc6b"/>
+<rect x="70" y="910" width="780" height="115" rx="14" fill="#111f33" stroke="#b79bff" stroke-width="2"/>
+<rect x="85" y="929" width="4" height="26" rx="1" fill="#b79bff" stroke="#b79bff" stroke-width="2"/>
+<text x="100" y="930" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Notification :8001</text>
+<text x="95" y="968" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Simulated deliveries in process memory; can duplicate on replay</text>
+<rect x="1020" y="910" width="700" height="115" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
+<rect x="1035" y="929" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
+<text x="1050" y="930" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Analytics :8002 → analytics database</text>
+<text x="1045" y="968" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Event IDs deduplicate saved rows; rebuild depends on retained events</text>
+<polyline points="1240,830 1240,870 460,870 460,910" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="460.0,910.0 454.3,898.3 465.7,898.3" fill="#ffcc6b"/>
+<polyline points="1450,830 1450,910" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
+<polygon points="1450.0,910.0 1444.3,898.3 1455.7,898.3" fill="#ffcc6b"/>
+</svg>
