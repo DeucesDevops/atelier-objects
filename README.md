@@ -1,16 +1,34 @@
-# Commerce Platform App
+# Commerce Platform
 
-A portfolio-ready, polyglot microservices workload built to be reused across DevOps, platform engineering, multi-cloud, GitOps, security, and AIOps projects. This repository contains **application code only**: no cloud resources, Kubernetes, CI/CD, observability stack, or deployment platform configuration.
+A polyglot microservices application that models a small commerce checkout. A shopper registers, browses products, reserves inventory, places an order, completes a simulated payment, receives a simulated notification, and produces analytics events.
 
-The application models a small but complete commerce checkout. A shopper registers, browses products, reserves inventory, places an order, completes a simulated payment, receives a simulated notification, and produces analytics events.
+## Features
 
-## Architecture
+- Shopper registration, login, and JWT-protected order access.
+- Product catalog with pricing and a short-lived Redis cache.
+- Checkout that reserves stock, authorizes and captures a simulated payment, then confirms the order.
+- A decline path that marks the order failed and releases the inventory reservation.
+- Cancellation that requests a simulated refund and releases reserved stock.
+- Domain events on one Kafka-compatible topic for notification and analytics consumers.
+- A React shopper UI for catalog, cart, checkout, notifications, and analytics.
 
-![Commerce Platform application architecture](docs/architecture.svg)
+Each data-owning service has its own PostgreSQL database. Services share the event envelope described in [docs/events.md](docs/events.md).
 
-The [documentation hub](docs/README.md) contains Docker, proposed AWS/kOps and Kubernetes diagrams, checkout/event flows, delivery and recovery images, a [ten-stage implementation plan](docs/plans/implementation-plan.md), and the [application/platform folder structure and scaffold status](docs/plans/folder-structure.md). The cloud diagrams are planning artifacts; they do not imply deployed infrastructure.
+## Services and tech stack
 
-The diagram separates synchronous HTTP calls, asynchronous domain events, and service-owned data stores. The Mermaid source below provides a simplified text-renderable view of the same architecture.
+| Service | Stack | Port | Responsibility |
+|---|---|---:|---|
+| Web App | React, Vite, Nginx | 5173 | Shopper UI |
+| API Gateway | TypeScript, NestJS | 8080 | Public HTTP entry point and routing |
+| Auth | TypeScript, NestJS | 3001 | Registration, login, JWT identities, Redis session hints |
+| Catalog | TypeScript, NestJS | 3002 | Product CRUD, pricing, Redis cache |
+| Order | TypeScript, NestJS | 3003 | Checkout orchestration and order status |
+| Inventory | TypeScript, NestJS | 3004 | Transactional stock reservation and release |
+| Payment | Java 21, Spring Boot | 8085 | Simulated authorize, capture, and refund |
+| Notification | Python, FastAPI | 8001 | Event-driven simulated customer messages |
+| Analytics | Python, FastAPI | 8002 | Event-consumed reporting read model |
+
+Local backing services are PostgreSQL 16 (one database per owning service), Redis 7, and Redpanda as a Kafka-compatible broker. The shared event helpers live in `shared/typescript` and `shared/python`.
 
 ```mermaid
 flowchart LR
@@ -37,55 +55,36 @@ flowchart LR
     Analytics --> AnalyticsDB[(PostgreSQL)]
 ```
 
-| Service | Stack | Port | Responsibility |
-|---|---|---:|---|
-| API Gateway | TypeScript, NestJS | 8080 | Stable public entry point and routing |
-| Auth | TypeScript, NestJS | 3001 | Registration, login, JWT identities, Redis session hints |
-| Catalog | TypeScript, NestJS | 3002 | Product CRUD, pricing, Redis cache |
-| Order | TypeScript, NestJS | 3003 | Checkout orchestration and order status |
-| Inventory | TypeScript, NestJS | 3004 | Transactional stock reservation and release |
-| Payment | Java 21, Spring Boot | 8085 | Simulated authorize, capture, and refund lifecycle |
-| Notification | Python, FastAPI | 8001 | Event-driven simulated customer messages |
-| Analytics | Python, FastAPI | 8002 | Event-consumed reporting read model |
-| Web App | React, Vite | 5173 | Shopper UI for catalog, cart, checkout, notifications, and analytics |
+Diagrams for the Compose layout and the checkout flow are in [docs/architecture](docs/architecture/README.md). The original application drawing is [docs/architecture.svg](docs/architecture.svg).
 
-Each data-owning service has its own PostgreSQL database. Services exchange the shared event envelope described in [docs/events.md](docs/events.md); Redpanda supplies a Kafka-compatible local broker.
+## Run locally with Docker Compose
 
-Compose runs each service-owned database in a separate PostgreSQL container with its own persistent volume. The database ports are bound to `127.0.0.1` so local database tools can connect while the ports remain private when the same Compose stack runs on one EC2 instance.
+Prerequisites: Docker with Compose, and `curl` if you use the demo scripts.
 
-| Service | PostgreSQL container | Local host port | Database |
-|---|---|---:|---|
-| Auth | `auth-db` | 5433 | `auth` |
-| Catalog | `catalog-db` | 5434 | `catalog` |
-| Inventory | `inventory-db` | 5435 | `inventory` |
-| Order | `order-db` | 5436 | `orders` |
-| Payment | `payment-db` | 5437 | `payments` |
-| Analytics | `analytics-db` | 5438 | `analytics` |
-
-## Run locally
-
-Prerequisites: Docker with Compose, plus `curl` for the demo scripts.
+From the repository root:
 
 ```bash
-cp .env.example .env
 docker compose up --build -d
 ./commerce-demo/seed.sh
 ./commerce-demo/demo-flow.sh
 ```
 
-Open the frontend at `http://localhost:5173`. The API Gateway remains available at `http://localhost:8080`.
+Open the shopper UI at `http://localhost:5173`. The API gateway is at `http://localhost:8080`.
 
-Initial image builds can take several minutes because they compile Node, Java, and Python services. View the resulting data:
+`compose.yml` supplies local defaults when the variables in `.env.example` are unset or empty. To override them, copy that file to an untracked `.env` and assign values there. Do not commit `.env`.
+
+Initial image builds compile the Node, Java, and Python services. After the stack is up:
 
 ```bash
-curl http://localhost:8080/api/orders -H "Authorization: Bearer YOUR_TOKEN"
-curl http://localhost:8080/api/notifications/deliveries
-curl http://localhost:8080/api/analytics/summary
+docker compose ps
+curl http://localhost:8080/health
 ```
 
-Stop the application with `docker compose down`. Named database volumes preserve demo data; add `--volumes` only when you intentionally want a clean slate.
+Stop the application with `docker compose down`. Named database volumes keep demo data. Add `--volumes` only when you want empty databases.
 
-## Public routes
+`make up`, `make down`, `make logs`, and `make seed` wrap the same Compose and demo commands.
+
+### Routes
 
 The gateway maps `/api/{service}` to the owning service:
 
@@ -97,76 +96,82 @@ The gateway maps `/api/{service}` to the owning service:
 - `/api/notifications/deliveries`
 - `/api/analytics/summary`, `/api/analytics/events`
 
-The browser frontend runs separately at `/` on port `5173`.
+Every service exposes `GET /health`. NestJS services expose OpenAPI JSON at `/openapi.json`. FastAPI and Spring Boot expose Swagger UI at `/docs`. Spring Boot also reports health at `/actuator/health`.
 
-Every service exposes `GET /health`. NestJS services expose OpenAPI JSON at `/openapi.json`; FastAPI and Spring Boot expose interactive Swagger UI at `/docs`. Spring Boot also reports health at `/actuator/health`.
+Create an order with payment method `decline` to exercise the failed-payment path. Cancelling a confirmed order triggers a simulated refund and releases its reservation.
 
-## Demo behavior
+### Databases
 
-The happy path is deliberately synchronous at the checkout boundary so it is easy to demonstrate and test: order → inventory reservation → payment authorization → capture → confirmed order. State changes also publish asynchronous events for notification and analytics consumers.
+| Service | PostgreSQL container | Host port | Database |
+|---|---|---:|---|
+| Auth | `auth-db` | 5433 | `auth` |
+| Catalog | `catalog-db` | 5434 | `catalog` |
+| Inventory | `inventory-db` | 5435 | `inventory` |
+| Order | `order-db` | 5436 | `orders` |
+| Payment | `payment-db` | 5437 | `payments` |
+| Analytics | `analytics-db` | 5438 | `analytics` |
 
-Use `"paymentMethod": "decline"` when creating an order to trigger a simulated payment failure. The order becomes `FAILED` and the inventory reservation is released. Cancelling a confirmed order triggers a simulated refund and releases its reservation.
+Host database ports bind to `127.0.0.1`. Redis is on port `6379`. The external Kafka listener is `19092`; containers use `redpanda:9092`.
 
-## Development and tests
+## Tests
+
+Prerequisites: Node.js 22+, Java 21 with Maven, and Python 3.
 
 ```bash
-npm install
+npm ci
 npm test
-npm run build
-npm --workspace @commerce/web-app run dev
-
 mvn -f services/payment-service/pom.xml test
 
-cd services/notification-service && python -m pytest
-cd ../analytics-service && python -m pytest
+python3 -m venv .venv
+.venv/bin/pip install -r services/notification-service/requirements.txt -r services/analytics-service/requirements.txt
+cd services/notification-service && ../../.venv/bin/python -m pytest
+cd services/analytics-service && ../../.venv/bin/python -m pytest
 ```
 
-Local service-specific environment examples and focused instructions live in each service directory. Database schema synchronization is enabled for this portfolio workload to keep setup approachable; a production evolution would replace it with explicit migrations.
+`make install` then `make test` runs the same suites. `npm run build` compiles the TypeScript workspaces. `docker compose config --quiet` checks the Compose file.
 
-## Container builds
+Service-level notes live in each service directory. Schema synchronization is enabled so local setup stays small; a later evolution would replace it with explicit migrations.
 
-Every application image uses the same simple two-stage pattern: a build stage creates the deployable artifact, and a smaller runtime stage contains only what is needed to run it.
+## Environment variables
 
-| Services | Build stage | Runtime stage |
-|---|---|---|
-| API Gateway, Auth, Catalog, Orders, Inventory | Node.js installs dependencies and compiles TypeScript | Node.js runs compiled JavaScript as the non-root `node` user |
-| Payment | Maven packages the Spring Boot JAR | Java 21 JRE runs the JAR as a non-root user |
-| Notification, Analytics | Python creates a virtual environment and installs dependencies | Python runs Uvicorn as a non-root user |
-| Web App | Node.js and Vite create static assets | Unprivileged Nginx serves the assets on container port `8080` |
+Tracked `.env.example` files list names only. Set values in an untracked `.env`. Compose reads the root file. Each service example lists the names that service reads when you run it outside Compose.
 
-Build all application images with:
+### Root
 
-```bash
-docker compose build
-```
+`POSTGRES_USER`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `KAFKA_BROKERS`, `REDIS_URL`, `ENVIRONMENT`, `VITE_API_URL`
 
-The Compose frontend mapping remains `http://localhost:5173`; it maps host port `5173` to the Nginx container's port `8080`. `VITE_API_URL` is a frontend build argument because Vite embeds public configuration when it creates the static assets.
+`VITE_API_URL` is a web image build argument. Vite embeds it in the static assets, so changing it requires a rebuild of `web-app`.
 
-## Repository boundaries
+### API Gateway
 
-This is the reusable workload layer. The five later portfolio projects should consume it from separate repositories and add their own infrastructure and delivery concerns. Keeping those concerns separate makes the application useful across AWS, Azure, internal-platform, multi-cloud, and incident-automation demonstrations without duplicating business code.
+`PORT`, `AUTH_SERVICE_URL`, `CATALOG_SERVICE_URL`, `ORDER_SERVICE_URL`, `INVENTORY_SERVICE_URL`, `PAYMENT_SERVICE_URL`, `NOTIFICATION_SERVICE_URL`, `ANALYTICS_SERVICE_URL`
 
-## CI/CD pipelines
+### Auth
 
-The repository includes GitHub Actions and Jenkins pipelines. Both validate the Compose and shell configuration, run the Node, Java, and Python test suites, compile the application, build every container, start the complete stack, and exercise the seed and checkout demo. After a successful GitHub Actions smoke test on `main`, all nine application images are published to Docker Hub with both the full commit SHA and `latest` tags. Successful `main` builds can then deploy the Compose release to an Ubuntu EC2 host.
+`PORT`, `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`
 
-Docker Hub publishing requires these GitHub Actions repository secrets:
+### Catalog
 
-- `DOCKERHUB_USERNAME`: Docker Hub account or organization name
-- `DOCKERHUB_TOKEN`: Docker Hub personal access token with read/write permission
+`PORT`, `DATABASE_URL`, `REDIS_URL`, `KAFKA_BROKERS`, `SEED_DEMO`
 
-Images use the repository convention `<DOCKERHUB_USERNAME>/atelier-objects-<service>`, for example `acme/atelier-objects-api-gateway:latest` and `acme/atelier-objects-api-gateway:<full-commit-sha>`.
+### Order
 
-EC2 deployment uses the `production` environment and requires these repository or environment secrets:
+`PORT`, `DATABASE_URL`, `INVENTORY_SERVICE_URL`, `PAYMENT_SERVICE_URL`, `KAFKA_BROKERS`, `JWT_SECRET`
 
-- `DEPLOY_HOST`: EC2 public DNS name or IP address
-- `DEPLOY_USER`: SSH user, normally `ubuntu`
-- `DEPLOY_SSH_KEY`: private key accepted by the host
-- `DEPLOY_KNOWN_HOSTS`: trusted host-key line produced by `ssh-keyscan -H HOST`
-- `VITE_API_URL`: externally reachable API URL, such as `http://example:8080`
+### Inventory
 
-Set the GitHub Actions repository variable `ENABLE_EC2_DEPLOYMENT` to `true` after configuring the deployment secrets. Until then, successful `main` builds stop after publishing the Docker Hub images.
+`PORT`, `DATABASE_URL`, `KAFKA_BROKERS`
 
-Jenkins requires an agent labelled `docker` with Docker Compose, Node.js 22+, Java 21, Maven, Python 3, and `curl`. Add the EC2 private key as an SSH credential with ID `commerce-ec2-ssh`, and configure `DEPLOY_HOST`, `DEPLOY_USER`, and `VITE_API_URL`. Jenkins mirrors the GitHub guard through its `ENABLE_EC2_DEPLOYMENT` parameter. On both systems, deployment runs only for successful `main` builds when explicitly enabled.
+### Payment
 
-The EC2 security group must allow SSH from the runner or Jenkins agent and ports `5173` and `8080` from the intended users. The pipelines preserve the host's `/opt/commerce-platform/current/.env`; on first deployment the bootstrap script generates its database password and JWT secret.
+`PORT`, `DATABASE_URL`, `DATABASE_USER`, `DATABASE_PASSWORD`, `KAFKA_BROKERS`
+
+### Notification
+
+`KAFKA_BROKERS`
+
+### Analytics
+
+`DATABASE_URL`, `KAFKA_BROKERS`
+
+Compose also sets `POSTGRES_DB` on each database container and `SERVICE_NAME` on the TypeScript images. Those names are not in the example files.

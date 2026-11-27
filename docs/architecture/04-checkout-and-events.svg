@@ -68,7 +68,7 @@
 <rect x="1020" y="910" width="700" height="115" rx="14" fill="#111f33" stroke="#7ee3bb" stroke-width="2"/>
 <rect x="1035" y="929" width="4" height="26" rx="1" fill="#7ee3bb" stroke="#7ee3bb" stroke-width="2"/>
 <text x="1050" y="930" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">Analytics :8002 → analytics database</text>
-<text x="1045" y="968" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Event IDs deduplicate saved rows; rebuild depends on retained events</text>
+<text x="1045" y="968" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Event IDs deduplicate saved rows</text>
 <polyline points="1240,830 1240,870 460,870 460,910" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>
 <polygon points="460.0,910.0 454.3,898.3 465.7,898.3" fill="#ffcc6b"/>
 <polyline points="1450,830 1450,910" fill="none" stroke="#ffcc6b" stroke-width="3" stroke-linejoin="round" stroke-dasharray="10 8"/>

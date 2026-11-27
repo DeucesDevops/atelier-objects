@@ -103,5 +103,5 @@
 <text x="1355" y="871" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Host Kafka port :19092</text>
 <text x="1355" y="899" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">No persistent volume in Compose</text>
 <text x="70" y="1025" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="21" font-weight="400" fill="#ffcc6b">Compose publishes domain-service ports, Redis and Kafka on host interfaces; this is a local demo configuration.</text>
-<text x="70" y="1060" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Persistent today: PostgreSQL only. Notification delivery history is memory-only. Event and recovery paths are shown separately.</text>
+<text x="70" y="1060" dominant-baseline="text-before-edge" font-family="Arial,DejaVu Sans,sans-serif" font-size="20" font-weight="400" fill="#a7b8ce">Persistent today: PostgreSQL only. Notification delivery history is memory-only.</text>
 </svg>

@@ -1,4 +1,4 @@
-.PHONY: up down logs install test build validate smoke seed
+.PHONY: up down logs install test build validate seed
 
 up:
 	docker compose up --build
@@ -27,10 +27,7 @@ build:
 
 validate:
 	docker compose config --quiet
-	bash -n scripts/*.sh commerce-demo/*.sh
-
-smoke:
-	./scripts/ci-smoke-test.sh
+	bash -n commerce-demo/*.sh
 
 seed:
 	./commerce-demo/seed.sh

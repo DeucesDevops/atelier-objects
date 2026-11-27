@@ -23,7 +23,7 @@ x-ts-service: &ts-service
 
 services:
   # Each data-owning service gets an isolated PostgreSQL container and volume.
-  # Host ports bind to loopback for local tooling without exposing databases on EC2.
+  # Host ports bind to loopback so local database tools can connect.
   auth-db:
     <<: *postgres-service
     environment:
