@@ -1,0 +1,38 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: commerce
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: commerce.availability
+      rules:
+        - alert: CommerceDeploymentUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="commerce"} == 0
+          for: 5m
+          labels:
+            severity: page
+            service: commerce
+          annotations:
+            summary: "{{ $labels.deployment }} has no available replicas"
+            description: "The commerce namespace has a deployment with zero available pods."
+        - alert: CommercePodRestarts
+          expr: increase(kube_pod_container_status_restarts_total{namespace="commerce"}[15m]) > 3
+          for: 10m
+          labels:
+            severity: ticket
+            service: commerce
+          annotations:
+            summary: "{{ $labels.pod }} is restarting"
+            description: "A commerce container restarted more than three times in 15 minutes."
+        - alert: CommerceGatewayProbeFailed
+          expr: probe_success{job="commerce-gateway"} == 0
+          for: 5m
+          labels:
+            severity: page
+            service: api-gateway
+          annotations:
+            summary: "The public gateway health probe is failing"
+            description: "Add a blackbox probe named commerce-gateway when an external probe is configured."

@@ -8,6 +8,7 @@ Documentation for the commerce application: what the services do, how they talk,
 2. Review the [architecture diagrams](architecture/README.md).
 3. Use the [event contract](events.md) when producing or consuming `commerce.domain-events`.
 4. Follow [local development](runbooks/local-development.md) to start the stack and run the test suites.
+5. For EKS, start with [architecture](ARCHITECTURE.md), [setup](SETUP.md), and the [platform runbooks](RUNBOOKS/deploy.md).
 
 ## Architecture gallery
 

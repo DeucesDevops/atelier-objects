@@ -1,0 +1,95 @@
+{{- range $name, $svc := .Values.services }}
+---
+# checkov:skip=CKV_K8S_43:Image tags are immutable ECR SHAs supplied at deploy time.
+# checkov:skip=CKV_K8S_35:Credentials are injected with envFrom from External Secrets, not chart values.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    {{- include "atelier.labels" (dict "root" $ "name" $name) | nindent 4 }}
+spec:
+  replicas: {{ $svc.replicas }}
+  selector:
+    matchLabels:
+      {{- include "atelier.selector" (dict "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "atelier.labels" (dict "root" $ "name" $name) | nindent 8 }}
+    spec:
+      serviceAccountName: {{ $name }}
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              {{- include "atelier.selector" (dict "name" $name) | nindent 14 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ include "atelier.image" (dict "root" $ "name" $name) | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: {{ $svc.port }}
+          env:
+            - name: SERVICE_NAME
+              value: {{ $name | quote }}
+            {{- if and $svc.kafka $.Values.config.kafkaBrokers }}
+            - name: KAFKA_BROKERS
+              value: {{ $.Values.config.kafkaBrokers | quote }}
+            {{- end }}
+            {{- if eq $name "catalog-service" }}
+            - name: SEED_DEMO
+              value: {{ $.Values.config.seedDemo | quote }}
+            {{- end }}
+            {{- range $key, $value := $svc.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- if $svc.externalSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $name }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $path := $svc.writablePaths }}
+            - name: {{ include "atelier.volumeName" $path }}
+              mountPath: {{ $path }}
+            {{- end }}
+      volumes:
+        {{- range $path := $svc.writablePaths }}
+        - name: {{ include "atelier.volumeName" $path }}
+          emptyDir: {}
+        {{- end }}
+{{- end }}

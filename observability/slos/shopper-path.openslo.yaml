@@ -1,0 +1,33 @@
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: shopper-path-availability
+  displayName: Shopper path availability
+spec:
+  description: Ready replicas of the commerce deployments stay at the desired count.
+  service: atelier
+  indicator:
+    metadata:
+      name: deployment-availability
+    spec:
+      ratioMetric:
+        counter: false
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(kube_deployment_status_replicas_available{namespace="commerce"})
+              queryType: promql
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(clamp_min(kube_deployment_spec_replicas{namespace="commerce"}, 1))
+              queryType: promql
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - displayName: 99.9 percent
+      target: 0.999

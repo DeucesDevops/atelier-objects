@@ -1,0 +1,150 @@
+name: Build and push
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  image:
+    name: ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: api-gateway
+            dockerfile: services/Dockerfile.typescript
+            context: .
+            service_arg: api-gateway
+          - service: auth-service
+            dockerfile: services/Dockerfile.typescript
+            context: .
+            service_arg: auth-service
+          - service: catalog-service
+            dockerfile: services/Dockerfile.typescript
+            context: .
+            service_arg: catalog-service
+          - service: order-service
+            dockerfile: services/Dockerfile.typescript
+            context: .
+            service_arg: order-service
+          - service: inventory-service
+            dockerfile: services/Dockerfile.typescript
+            context: .
+            service_arg: inventory-service
+          - service: web-app
+            dockerfile: services/web-app/Dockerfile
+            context: .
+            service_arg: ""
+          - service: payment-service
+            dockerfile: services/payment-service/Dockerfile
+            context: services/payment-service
+            service_arg: ""
+          - service: notification-service
+            dockerfile: services/notification-service/Dockerfile
+            context: .
+            service_arg: ""
+          - service: analytics-service
+            dockerfile: services/analytics-service/Dockerfile
+            context: .
+            service_arg: ""
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPOSITORY_PREFIX: ${{ vars.ECR_REPOSITORY_PREFIX || 'atelier-' }}
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check AWS role
+        id: creds
+        env:
+          AWS_ECR_PUSH_ROLE_ARN: ${{ secrets.AWS_ECR_PUSH_ROLE_ARN }}
+        run: |
+          if [ -z "${AWS_ECR_PUSH_ROLE_ARN}" ]; then
+            echo "configured=false" >> "${GITHUB_OUTPUT}"
+            echo "AWS_ECR_PUSH_ROLE_ARN is unset; skipping build and push."
+          else
+            echo "configured=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Configure AWS credentials
+        if: steps.creds.outputs.configured == 'true'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_PUSH_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: ecr-push-${{ matrix.service }}
+
+      - name: Log in to Amazon ECR
+        if: steps.creds.outputs.configured == 'true'
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          SERVICE: ${{ matrix.service }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
+          CONTEXT: ${{ matrix.context }}
+          SERVICE_ARG: ${{ matrix.service_arg }}
+        run: |
+          set -euo pipefail
+          image="${REGISTRY}/${ECR_REPOSITORY_PREFIX}${SERVICE}"
+          tag="${image}:${GITHUB_SHA}"
+          echo "IMAGE=${tag}" >> "${GITHUB_ENV}"
+          args=(docker build --file "${DOCKERFILE}" --tag "${tag}")
+          if [ -n "${SERVICE_ARG}" ]; then
+            args+=(--build-arg "SERVICE=${SERVICE_ARG}")
+          fi
+          if [ "${SERVICE}" = "web-app" ] && [ -n "${VITE_API_URL}" ]; then
+            args+=(--build-arg "VITE_API_URL=${VITE_API_URL}")
+          fi
+          args+=("${CONTEXT}")
+          "${args[@]}"
+
+      - name: Scan image
+        if: steps.creds.outputs.configured == 'true'
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ env.IMAGE }}
+          format: table
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          ignore-unfixed: true
+
+      - name: SBOM
+        if: steps.creds.outputs.configured == 'true'
+        uses: anchore/sbom-action@v0.24.4
+        with:
+          image: ${{ env.IMAGE }}
+          format: spdx-json
+          output-file: ${{ matrix.service }}-sbom.spdx.json
+          upload-artifact: true
+          artifact-name: ${{ matrix.service }}-sbom.spdx.json
+          upload-release-assets: false
+
+      - name: Push
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          SERVICE: ${{ matrix.service }}
+        run: |
+          set -euo pipefail
+          repo="${ECR_REPOSITORY_PREFIX}${SERVICE}"
+          if aws ecr describe-images --repository-name "${repo}" --image-ids "imageTag=${GITHUB_SHA}" >/dev/null 2>&1; then
+            echo "Image ${repo}:${GITHUB_SHA} already exists; immutable tags are not overwritten."
+          else
+            docker push "${IMAGE}"
+          fi

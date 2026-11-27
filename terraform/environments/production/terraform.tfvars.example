@@ -1,0 +1,11 @@
+aws_region = "us-east-1"
+
+# Example only. Replace with the zone you will delegate.
+domain = "example.com"
+
+github_repository = "DeucesDevops/atelier-objects"
+state_bucket_arn  = "arn:aws:s3:::REPLACE-WITH-A-GLOBALLY-UNIQUE-BUCKET-NAME"
+
+# Replace 203.0.113.10/32 with the operator CIDR before opening the API.
+endpoint_public_access = true
+public_access_cidrs    = ["203.0.113.10/32"]

@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [dev, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    name: ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: api-gateway
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/api-gateway/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/api-gateway
+          - service: auth-service
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/auth-service/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/auth-service
+          - service: catalog-service
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/catalog-service/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/catalog-service
+          - service: order-service
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/order-service/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/order-service
+          - service: inventory-service
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/inventory-service/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/inventory-service
+          - service: web-app
+            runtime: node
+            workdir: .
+            lint: npx tsc -p services/web-app/tsconfig.json --noEmit
+            test: npm test --workspace @commerce/web-app
+          - service: payment-service
+            runtime: java
+            workdir: .
+            lint: mvn -B -f services/payment-service/pom.xml -DskipTests compile
+            test: mvn -B -f services/payment-service/pom.xml test
+          - service: notification-service
+            runtime: python
+            workdir: services/notification-service
+            lint: python -m compileall -q app
+            test: python -m pytest
+          - service: analytics-service
+            runtime: python
+            workdir: services/analytics-service
+            lint: python -m compileall -q app
+            test: python -m pytest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        if: matrix.runtime == 'node'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        if: matrix.runtime == 'node'
+        run: npm ci
+
+      - name: Set up Java
+        if: matrix.runtime == 'java'
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Set up Python
+        if: matrix.runtime == 'python'
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ${{ matrix.workdir }}/requirements.txt
+
+      - name: Install Python dependencies
+        if: matrix.runtime == 'python'
+        working-directory: ${{ matrix.workdir }}
+        run: python -m pip install -r requirements.txt
+
+      - name: Lint
+        working-directory: ${{ matrix.workdir }}
+        run: ${{ matrix.lint }}
+
+      - name: Test
+        working-directory: ${{ matrix.workdir }}
+        run: ${{ matrix.test }}
