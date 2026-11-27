@@ -16,7 +16,7 @@ RUN npm ci
 COPY services/web-app services/web-app
 RUN npm --workspace @commerce/web-app run build
 
-FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
+FROM nginxinc/nginx-unprivileged:1.31-alpine AS runtime
 COPY services/web-app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/services/web-app/dist /usr/share/nginx/html
 
