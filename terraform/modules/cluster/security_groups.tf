@@ -76,13 +76,16 @@ resource "aws_vpc_security_group_egress_rule" "node_cluster" {
   referenced_security_group_id = aws_security_group.cluster.id
 }
 
-resource "aws_vpc_security_group_egress_rule" "node_internet" {
+resource "aws_vpc_security_group_egress_rule" "node_https" {
+  #trivy:ignore:AVD-AWS-0104 ECR and the AWS APIs are public HTTPS endpoints. NAT egress has no tighter CIDR.
   security_group_id = aws_security_group.node.id
-  description       = "Nodes to the internet through NAT"
-  ip_protocol       = "-1"
+  description       = "Nodes to ECR and AWS APIs through NAT over HTTPS"
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
   cidr_ipv4         = "0.0.0.0/0"
 
-  #checkov:skip=CKV_AWS_382:Nodes pull images and reach AWS APIs through the NAT gateway.
+  #checkov:skip=CKV_AWS_382:ECR and the AWS APIs are reached over HTTPS through the NAT gateway.
 }
 
 resource "aws_ec2_tag" "cluster_sg_karpenter" {
