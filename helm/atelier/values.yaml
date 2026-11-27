@@ -1,0 +1,222 @@
+namespace: commerce
+environment: dev
+namePrefix: atelier-dev-
+secretPrefix: atelier/dev
+
+image:
+  registry: ""
+  tag: dev
+  pullPolicy: IfNotPresent
+
+# Leave empty here. Pass the real zone at install time. example.com is only an example.
+domain: ""
+
+config:
+  kafkaBrokers: ""
+  seedDemo: "true"
+
+ingress:
+  enabled: true
+  scheme: internet-facing
+  certificateArn: ""
+  webHost: ""
+  apiHost: ""
+
+services:
+  web-app:
+    port: 8080
+    replicas: 1
+    externalSecret: false
+    kafka: false
+    env: {}
+    writablePaths:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  api-gateway:
+    port: 8080
+    replicas: 1
+    externalSecret: false
+    kafka: false
+    env:
+      PORT: "8080"
+      AUTH_SERVICE_URL: http://auth-service:3001
+      CATALOG_SERVICE_URL: http://catalog-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+      INVENTORY_SERVICE_URL: http://inventory-service:3004
+      PAYMENT_SERVICE_URL: http://payment-service:8085
+      NOTIFICATION_SERVICE_URL: http://notification-service:8001
+      ANALYTICS_SERVICE_URL: http://analytics-service:8002
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 4
+      cpu: 70
+  auth-service:
+    port: 3001
+    replicas: 1
+    externalSecret: true
+    kafka: false
+    env:
+      PORT: "3001"
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  catalog-service:
+    port: 3002
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env:
+      PORT: "3002"
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  order-service:
+    port: 3003
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env:
+      PORT: "3003"
+      INVENTORY_SERVICE_URL: http://inventory-service:3004
+      PAYMENT_SERVICE_URL: http://payment-service:8085
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 4
+      cpu: 70
+  inventory-service:
+    port: 3004
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env:
+      PORT: "3004"
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  payment-service:
+    port: 8085
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env:
+      PORT: "8085"
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 200m
+        memory: 384Mi
+      limits:
+        cpu: "1"
+        memory: 768Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  notification-service:
+    port: 8001
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env: {}
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70
+  analytics-service:
+    port: 8002
+    replicas: 1
+    externalSecret: true
+    kafka: true
+    env: {}
+    writablePaths:
+      - /tmp
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    hpa:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      cpu: 70

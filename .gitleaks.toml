@@ -1,0 +1,9 @@
+title = "atelier"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Placeholder bearer token in historical documentation, not a credential"
+regexTarget = "secret"
+regexes = ['''^YOUR_TOKEN$''']

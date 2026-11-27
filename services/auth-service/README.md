@@ -7,4 +7,4 @@ Owns shopper identities in PostgreSQL. It supports registration, login, JWT acce
 - OpenAPI: `/openapi.json`
 - API: `POST /register`, `POST /login`, `GET /me`
 
-Copy `.env.example` to `.env`, install root dependencies, and run `npm run start:dev` in this folder.
+`.env.example` lists variable names only. Assign them in an untracked `.env`, install root dependencies, and run `npm run start:dev` in this folder.

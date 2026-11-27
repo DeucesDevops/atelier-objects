@@ -1,0 +1,14 @@
+repoURL: https://github.com/DeucesDevops/atelier-objects
+targetRevision: dev
+path: helm/atelier
+namespace: commerce
+project: default
+# Leave empty until the zone exists. example.com is only an example.
+domain: ""
+certificateArn: ""
+image:
+  registry: ""
+  prefix: atelier-
+valueFiles:
+  - values.yaml
+  - values-production.yaml

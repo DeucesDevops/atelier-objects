@@ -1,0 +1,53 @@
+environment: production
+namePrefix: atelier-
+secretPrefix: atelier/production
+config:
+  seedDemo: "false"
+image:
+  tag: "0.0.0" # deploy-image-tag
+services:
+  web-app:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 6
+  api-gateway:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 8
+  auth-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 6
+  catalog-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 6
+  order-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 8
+  inventory-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 6
+  payment-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 6
+  notification-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 4
+  analytics-service:
+    replicas: 2
+    hpa:
+      minReplicas: 2
+      maxReplicas: 4

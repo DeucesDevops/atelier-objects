@@ -16,4 +16,6 @@ COPY --from=build --chown=app:app /app/target/payment-service-1.0.0.jar app.jar
 
 USER app
 EXPOSE 8085
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD curl -fsS "http://127.0.0.1:${PORT:-8085}/health" || exit 1
 ENTRYPOINT ["java", "-jar", "app.jar"]

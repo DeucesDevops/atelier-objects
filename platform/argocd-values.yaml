@@ -1,0 +1,20 @@
+global:
+  # hostname is set by Terraform to argocd.<domain>
+  domain: ""
+configs:
+  params:
+    server.insecure: "true"
+server:
+  ingress:
+    enabled: true
+    controller: generic
+    ingressClassName: alb
+    path: /
+    pathType: Prefix
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/healthcheck-path: /healthz

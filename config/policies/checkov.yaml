@@ -1,0 +1,25 @@
+compact: true
+framework:
+  - terraform
+  - github_actions
+  - dockerfile
+  - kubernetes
+  - helm
+download-external-modules: false
+skip-path:
+  - .terraform
+  - node_modules
+  - dist
+  - target
+  - .venv
+  # Helm templates are not valid YAML until render. helm lint and helm template cover them.
+  - helm/atelier/templates
+  - helm/atelier-argocd-application/templates
+  # Dev-only in-cluster data. Production uses Secrets Manager and managed endpoints.
+  - platform/data
+external-checks-dir:
+  - config/policies/checks
+skip-check:
+  # Action tags are updated by Dependabot. Commit SHAs are not required for this repository.
+  - CKV_GHA_7
+  - CKV2_GHA_1

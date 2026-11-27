@@ -1,0 +1,47 @@
+{{- if and .Values.ingress.enabled .Values.domain }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: atelier
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: atelier
+    app.kubernetes.io/instance: atelier
+    app.kubernetes.io/part-of: atelier
+  annotations:
+    alb.ingress.kubernetes.io/group.name: atelier
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.scheme | quote }}
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/success-codes: "200"
+    {{- if .Values.ingress.certificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certificateArn | quote }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    {{- else }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    {{- end }}
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ .Values.ingress.webHost | default (printf "shop.%s" .Values.domain) }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-app
+                port:
+                  name: http
+    - host: {{ .Values.ingress.apiHost | default (printf "api.%s" .Values.domain) }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  name: http
+{{- end }}

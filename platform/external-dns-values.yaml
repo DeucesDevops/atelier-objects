@@ -1,0 +1,10 @@
+provider:
+  name: aws
+policy: upsert-only
+registry: txt
+sources:
+  - ingress
+  - service
+serviceAccount:
+  create: true
+  name: external-dns

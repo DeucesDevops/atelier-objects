@@ -1,0 +1,6 @@
+replicas: 2
+settings:
+  eksControlPlane: true
+serviceAccount:
+  create: true
+  name: karpenter

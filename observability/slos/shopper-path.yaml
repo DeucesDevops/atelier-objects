@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: commerce-slo
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: commerce.slo
+      rules:
+        - record: atelier:deployment_availability:ratio
+          expr: |
+            avg(
+              kube_deployment_status_replicas_available{namespace="commerce"}
+              / clamp_min(kube_deployment_spec_replicas{namespace="commerce"}, 1)
+            )
+        - alert: CommerceAvailabilityBurn
+          expr: atelier:deployment_availability:ratio < 0.999
+          for: 15m
+          labels:
+            severity: page
+            slo: shopper-path-availability
+          annotations:
+            summary: Commerce deployment availability is below 99.9 percent
+            description: Ready replicas are the signal until a blackbox probe records probe_success. The objective is in shopper-path.openslo.yaml.
