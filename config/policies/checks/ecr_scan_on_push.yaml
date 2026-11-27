@@ -1,0 +1,12 @@
+metadata:
+  id: CKV_AWS_ATELIER_1
+  name: ECR repositories scan images on push
+  category: SUPPLY_CHAIN
+  guidelines: Each commerce repository sets image_scanning_configuration.scan_on_push
+definition:
+  cond_type: attribute
+  resource_types:
+    - aws_ecr_repository
+  attribute: image_scanning_configuration.scan_on_push
+  operator: equals
+  value: true

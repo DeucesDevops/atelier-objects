@@ -128,7 +128,19 @@ cd services/notification-service && ../../.venv/bin/python -m pytest
 cd services/analytics-service && ../../.venv/bin/python -m pytest
 ```
 
-`make install` then `make test` runs the same suites. `npm run build` compiles the TypeScript workspaces. `docker compose config --quiet` checks the Compose file.
+`make install` then `make test` runs the same suites. `npm run build` compiles the TypeScript workspaces. `docker compose config --quiet` checks the Compose file. `make validate` runs that Compose check, Terraform fmt and validate, shellcheck, and Helm lint.
+
+## Deployment
+
+Production runs on EKS in `us-east-1`. The domain is a Terraform variable. `example.com` is only the example in `terraform.tfvars.example`.
+
+- [Architecture](docs/ARCHITECTURE.md) for the cluster, ingress, and data path
+- [Setup](docs/SETUP.md) for the state bucket, secrets, and the two-stage apply
+- [Pipeline](docs/PIPELINE.md) for CI, image build, Terraform plan, and the production approval gate
+- [Runbooks](docs/RUNBOOKS/deploy.md) for deploy, rollback, teardown, data stores, and incidents
+- [ADRs](docs/ADR/0001-why-eks.md) for EKS, data stores, Argo CD, and state locking
+
+`make plan`, `make apply`, `make kubeconfig`, and `make teardown` take `ENV=dev` or `ENV=production`. They are not run as part of local Compose.
 
 Service-level notes live in each service directory. Schema synchronization is enabled so local setup stays small; a later evolution would replace it with explicit migrations.
 

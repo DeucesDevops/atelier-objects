@@ -13,3 +13,20 @@ __pycache__/
 *.py[cod]
 .DS_Store
 work/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.auto.tfvars
+terraform.tfvars
+backend.hcl
+.terraform.tfstate.lock.info

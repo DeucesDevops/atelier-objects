@@ -1,0 +1,3 @@
+# Baseline nodes reach ECR and the public AWS APIs through the NAT gateway.
+# There is no tighter public CIDR for those endpoints. Egress is TCP 443 only.
+AVD-AWS-0104

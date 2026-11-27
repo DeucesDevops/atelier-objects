@@ -1,0 +1,6 @@
+replicaCount: 2
+ingressClass: alb
+createIngressClassResource: true
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller

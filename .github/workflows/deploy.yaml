@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Immutable image tag to record for Argo CD
+        required: true
+        type: string
+      environment:
+        description: Target environment
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    name: Bump production image tags
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: dev
+          token: ${{ github.token }}
+      - name: Record image tag for Argo CD
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: ./scripts/bump-image-tag.sh "${IMAGE_TAG}"
+      - name: Commit and push
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add helm/atelier/values-production.yaml
+          if git diff --cached --quiet; then
+            echo "Image tag is already ${IMAGE_TAG}."
+            exit 0
+          fi
+          git commit -m "deploy: set production image tag to ${IMAGE_TAG}"
+          git push origin HEAD:dev

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: atelier
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.project }}
+  source:
+    repoURL: {{ .Values.repoURL | quote }}
+    targetRevision: {{ .Values.targetRevision | quote }}
+    path: {{ .Values.path }}
+    helm:
+      valueFiles:
+        {{- toYaml .Values.valueFiles | nindent 8 }}
+      parameters:
+        - name: domain
+          value: {{ .Values.domain | quote }}
+        - name: image.registry
+          value: {{ .Values.image.registry | quote }}
+        - name: namePrefix
+          value: {{ .Values.image.prefix | quote }}
+        - name: ingress.certificateArn
+          value: {{ .Values.certificateArn | quote }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.namespace }}
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
